@@ -3,7 +3,7 @@ import {connect} from "@/db"
 import {NextRequest, NextResponse} from "next/server"
 import { User } from "@/models/user.model";
 
-connect();
+connect().then(() => {console.log("MongoDb connected")});
 
 export async function POST(request:NextRequest, response:NextResponse){
 
@@ -16,6 +16,8 @@ export async function POST(request:NextRequest, response:NextResponse){
             email,
             password
         } = body
+
+        console.log(name,email,password);
 
         if(!name || !email || !password){
             return new NextResponse('All Fields are required',{status:400})

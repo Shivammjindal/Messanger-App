@@ -5,6 +5,7 @@ import Input from '@/app/components/Input/input'
 import AuthSocialButton from './AuthSocialButton'
 import { BsGithub,BsGoogle } from 'react-icons/bs'
 import { signIn } from 'next-auth/react'
+import axios from "axios"
 
 type Varient = "LOGIN" | "REGISTER"
 
@@ -18,7 +19,13 @@ function AuthForm() {
   const onSubmit:SubmitHandler<FieldValues> = async (data) => {
     setLoading(true)
     if(varient === "REGISTER"){
-
+      await axios.post('http://localhost:3000/api/register',data)
+      .then(() =>{
+        console.log("User Register Successfully")
+      })
+      .catch(() => {
+        console.log("User Registration Failure")
+      })
     }
 
     if(varient === "LOGIN"){
@@ -47,7 +54,6 @@ function AuthForm() {
     signIn(action, 
       { redirect:false })
       .then((callback) => {
-        
         if(callback?.error){
           console.log('Error Occured in Loggin in with Github')
         }
