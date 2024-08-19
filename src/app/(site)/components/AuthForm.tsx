@@ -1,18 +1,29 @@
 "use client"
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useState, useEffect } from 'react'
 import { useForm, FieldValues, SubmitHandler } from 'react-hook-form'
 import Input from '@/app/components/Input/input'
 import AuthSocialButton from './AuthSocialButton'
 import { BsGithub,BsGoogle } from 'react-icons/bs'
 import { signIn } from 'next-auth/react'
+import { useSession } from 'next-auth/react'
+import { useRouter } from 'next/navigation'
 import axios from "axios"
 
 type Varient = "LOGIN" | "REGISTER"
 
 function AuthForm() {
-
+  const router = useRouter();
+  const session = useSession();
   const [ varient, setVarient ] = useState<Varient>("LOGIN")
   const [ loading, setLoading ] = useState(false)
+
+  useEffect(() => {
+    if(session?.status === "authenticated"){
+      console.log('authenticated')
+      router.push('/users')
+    }
+    //dependencies m jis cheej k change hone s exact change krna ho vhi dale. pura object pass n kre
+  },[session?.status])
 
   const {register, handleSubmit, formState:{errors}} = useForm<FieldValues>({})
   // jo submit handler hai vo hme values provide krane ka kam krta hai. Jo form m input hui hai.
@@ -22,6 +33,7 @@ function AuthForm() {
       await axios.post('http://localhost:3000/api/register',data)
       .then(() =>{
         console.log("User Register Successfully")
+        signIn("credentials",data)
       })
       .catch(() => {
         console.log("User Registration Failure")
