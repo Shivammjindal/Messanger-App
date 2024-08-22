@@ -4,12 +4,13 @@ import { useState } from 'react'
 import useRoutes from '@/app/hooks/useRoute'
 import DesktopItem from './DesktopItem'
 import Avatar from '../Avatar'
+import { UserModelType } from '@/models/user.model'
 
 interface DesktopSidebarprops{
-  currentUser:any
+  currentUser:UserModelType
 }
 
-function DesktopSidebar({ currentUser }: { currentUser:DesktopSidebarprops }) {
+function DesktopSidebar({ currentUser }: DesktopSidebarprops) {
   
     const routes = useRoutes();
     const [isOpen, setIsOpen] = useState(false)

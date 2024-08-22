@@ -3,16 +3,16 @@ import React, { useCallback, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import axios from 'axios'
 import Avatar from '../Avatar'
+import { UserModelType } from '@/models/user.model'
 
 interface UserBoxProps{
-    item:any
+    data: UserModelType
 }
 
-const UserBox = ({data}:any) => {
+const UserBox = ({data}:UserBoxProps) => {
     
     const router = useRouter();
     const [loading, setLoading] = useState(false);
-    console.log(data)
     const handleClick = useCallback(() => {
         setLoading(true);
         //sending id at backend from which we do conversation. (Our Friend's Id)
@@ -24,9 +24,10 @@ const UserBox = ({data}:any) => {
         })
         .finally(() => setLoading(false))
     },[data, router])
-
+    
     return (
         <div
+            onClick={handleClick}
             className='
                 flex
                 flex-row
@@ -47,7 +48,6 @@ const UserBox = ({data}:any) => {
             '
         >
             <div 
-                onClick={handleClick}
                 className='
                     w-fit
                     relative
@@ -62,9 +62,7 @@ const UserBox = ({data}:any) => {
                     cursor-pointer
                 '
             >
-                
                 <Avatar currentUser={data}/>
-    
             </div>
             <div className='flex flex-row items-center font-medium antialiased self-center'>
                 {data.name}

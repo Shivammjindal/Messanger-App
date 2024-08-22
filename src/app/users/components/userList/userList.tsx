@@ -1,16 +1,13 @@
 "use client"
 import React from "react";
 import UserBox from "./UserBox";
+import { UserModelType } from "@/models/user.model";
 
 interface UserListProps{
-    items:any
+    items: UserModelType[]
 }
 
-interface ItemProps{
-    item: any
-}
-
-export const UserList = ({items}:{items: any}) => {
+export const UserList = ({items}:UserListProps) => {
     
     return(
         <aside className="
@@ -32,11 +29,8 @@ export const UserList = ({items}:{items: any}) => {
                 </div>
             </div>
             {
-                items.map((item:any) => (
-                    <UserBox 
-                        key={item._id}
-                        data={item}
-                    />
+                items.map((item) => (
+                    <UserBox key={`${item._id}`} data={item}/>
                 ))
             }
         </aside>

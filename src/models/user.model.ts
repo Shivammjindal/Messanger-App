@@ -1,4 +1,5 @@
-import mongoose from "mongoose";
+import mongoose, { Document } from "mongoose";
+import { InferSchemaType } from "mongoose"
 
 const UserSchema = new mongoose.Schema({
     name:{
@@ -12,7 +13,6 @@ const UserSchema = new mongoose.Schema({
     },
     hashedPassword:{
         type:String,
-        required:true,
     },
     emailVarified:{
         type:Boolean,
@@ -55,11 +55,13 @@ const UserSchema = new mongoose.Schema({
         //reference of message schema
         {
             type:mongoose.Schema.Types.ObjectId,
-            ref:""
+            ref:"messages"
         }
     ]
 },{
     timestamps:true
 })
 
-export const User = mongoose.models.users || mongoose.model("users",UserSchema)
+export type UserModelType = InferSchemaType<typeof UserSchema> & Document
+
+export const User = mongoose.models.users || mongoose.model<UserModelType>("users",UserSchema)

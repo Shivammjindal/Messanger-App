@@ -4,7 +4,7 @@ import { Conversation } from "@/models/conversation.model"
 
 export async function POST(request:NextRequest, response:NextResponse){
     try {
-        const currUser = await getCurrentUser()
+        const { user } = await getCurrentUser()
         const body = await request.json()
         const {
             userId,
@@ -13,6 +13,9 @@ export async function POST(request:NextRequest, response:NextResponse){
             name
         } = body
 
+        const currUser = user
+        console.log("IDS :: ",userId, currUser._id)
+
         if(!currUser?.id && !currUser?.email){
             return new NextResponse('Unauthorised User',{status:401})
         }
@@ -20,8 +23,6 @@ export async function POST(request:NextRequest, response:NextResponse){
         if(isGroup && (!members || members.length < 2 || !name)){
             return new NextResponse('Invalid Data', {status:400})
         }
-
-        console.log(members);
         
         if(isGroup){
             const newConversation = await Conversation.create({
@@ -31,9 +32,39 @@ export async function POST(request:NextRequest, response:NextResponse){
                     
                 ]
             })
+
+            return NextResponse.json(newConversation)
         }
 
+        const existingConversation = await Conversation.findOne({
+            $or:[
+                {
+                    userIds:[currUser._id, userId]
+                },
+                {
+                    userIds:[userId, currUser._id]
+                }
+            ]
+        })
+
+        if(existingConversation){
+            console.log('ExistingUser Found')
+            return NextResponse.json(existingConversation)
+        }
+
+        const newConversation = await Conversation.create(
+            {
+                userIds:[currUser._id, userId],
+                users:[currUser._id, userId]
+            }
+        )
+
+        console.log("New Conversations ",newConversation)
+
+        return NextResponse.json(newConversation)
+
     } catch (error) {
+        console.log(error)
         return new NextResponse('Internal Server Error',{status:500})
     }
 }

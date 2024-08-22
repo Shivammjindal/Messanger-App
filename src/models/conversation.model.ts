@@ -1,4 +1,5 @@
-import mongoose from "mongoose";
+import mongoose, { Document, InferSchemaType } from "mongoose";
+
 
 const ConversationSchama = new mongoose.Schema({
     lastMessageAt:{
@@ -18,7 +19,8 @@ const ConversationSchama = new mongoose.Schema({
     ],
     message:[
         {
-            type:mongoose.Schema.Types.ObjectId
+            type:mongoose.Schema.Types.ObjectId,
+            ref:'messages'
         }
     ],
     userIds:[
@@ -28,12 +30,14 @@ const ConversationSchama = new mongoose.Schema({
     ],
     users:[
         {
-            type:String
+            type:mongoose.Schema.Types.ObjectId,
+            ref:'users'
         }
     ]
-
 },{
     timestamps:true
 })
 
-export const Conversation = mongoose.models.conversations || mongoose.model('conversations',ConversationSchama)
+export type ConversationModelType = InferSchemaType<typeof ConversationSchama> & Document
+
+export const Conversation = mongoose.models.conversations || mongoose.model<ConversationModelType>('conversations',ConversationSchama)

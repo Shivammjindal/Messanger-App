@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, { Document, InferSchemaType } from "mongoose";
 
 const AccountSchema = new mongoose.Schema({
     userId:{
@@ -40,4 +40,6 @@ const AccountSchema = new mongoose.Schema({
     }
 })
 
-export const Account = mongoose.models.accounts || mongoose.model('accounts',AccountSchema)
+export type AccountModelType = InferSchemaType<typeof AccountSchema> & Document
+
+export const Account = mongoose.models.accounts || mongoose.model<AccountModelType>('accounts',AccountSchema)

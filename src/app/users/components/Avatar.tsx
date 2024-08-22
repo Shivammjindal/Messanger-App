@@ -1,8 +1,9 @@
 import React from 'react'
 import Image from 'next/image'
+import { UserModelType } from '@/models/user.model'
 
 interface AvatarProps{
-    currentUser?: any
+    currentUser?: UserModelType
 }
 
 const Avatar: React.FC<AvatarProps> = ({currentUser}) => {

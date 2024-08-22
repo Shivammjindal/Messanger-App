@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, { Document, InferSchemaType } from "mongoose";
 
 const messageSchema = new mongoose.Schema({
     body:{
@@ -33,3 +33,7 @@ const messageSchema = new mongoose.Schema({
 {
     timestamps:true
 })
+
+export type MessageModelType = InferSchemaType<typeof messageSchema> & Document
+
+export const Messages = mongoose.models.messages || mongoose.model<MessageModelType>('messages',messageSchema)
