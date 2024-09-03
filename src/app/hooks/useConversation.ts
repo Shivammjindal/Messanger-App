@@ -6,14 +6,15 @@ const useConversation = () => {
     const params = useParams();
 
     const conversationId = useMemo(() => {
-        if(!params?.conversationId){
+        if(!params?.userchat){
             return '';
         }
         
-        return params?.conversationId as string
-    },[params?.conversationId])
+        return params?.userchat as string
+    },[params?.userchat])
 
     const isOpen = useMemo(() => !!conversationId,[conversationId])
+    // const isOpen = true
     // !! this turens conversationId in boolen and weather it is present or not.
 
     return useMemo(() => {
@@ -22,7 +23,6 @@ const useConversation = () => {
             conversationId
         }
     },[isOpen, conversationId])
-
 }
 
 export default useConversation

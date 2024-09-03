@@ -10,5 +10,5 @@ export type FullMessageType = MessageModelType &
 
 export type FullConversationType = {
     users: UserModelType[],
-    message: FullMessageType
+    message: FullMessageType[]
 } & ConversationModelType

@@ -18,13 +18,11 @@ function ConversationList({initialItems}:ConversationListProps) {
   const [items, setItems] = useState(initialItems)
   const { conversationId, isOpen } = useConversation()
 
-  console.log("Items",items)
-
   return (
     <div
       className={clsx(
         'lg:fixed overflow-y-scroll lg:left-[2.7rem] lg:top-0 pb-20',
-        isOpen? "hidden" : "block w-full left-0"
+          isOpen? "hidden lg:block" : "block w-full left-0"
       )}
     >
       <div className='px-5'>
@@ -39,10 +37,9 @@ function ConversationList({initialItems}:ConversationListProps) {
           </div>
         </div>
         <div>
-          Hello
           {items.map((item) => {
             return <ConversationBox
-              key={item.id}
+              key={`${item._id || ''}`}
               data={item}
               selected={conversationId === item._id}
             />

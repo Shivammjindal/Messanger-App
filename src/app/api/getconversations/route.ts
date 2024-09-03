@@ -28,6 +28,6 @@ export async function POST(request:NextRequest, response:NextResponse){
 
     } catch (error) {
         console.log(error)
-        return new NextResponse('Internal Server Error',{status:500})
+        return NextResponse.json({err:error, status:500})
     }
 }
