@@ -2,15 +2,11 @@ import NextAuth, {AuthOptions} from "next-auth";
 import Credentials, { CredentialsProvider } from "next-auth/providers/credentials";
 import GithubProvider from "next-auth/providers/github";
 import GoogleProvider from "next-auth/providers/google"
-import {connect} from "@/db/index";
-import {User} from "@/models/user.model"
+import {User} from "@/models"
 import bcrypt from "bcrypt"
 import { MongoDBAdapter } from "@auth/mongodb-adapter";
-import { client } from "@/db/index"
+import { client } from "@/server";
 import { Adapter } from "next-auth/adapters";
-import { Profile } from "@/models/profile.model";
-
-connect()
 
 export const authOptions: AuthOptions = {
     adapter: MongoDBAdapter(client) as Adapter,
@@ -66,12 +62,6 @@ export const authOptions: AuthOptions = {
             console.log("User ",user)
             console.log("Account ",account)
             console.log("Profile ",profile)
-            await Profile.create({
-                name:profile?.name,
-                email:profile?.email,
-                image:profile?.image,
-                sub: profile?.sub,
-            })
             console.log("Email ",email)
             console.log("Credentials ",credentials)
             return true

@@ -5,6 +5,8 @@ import { FieldValues, SubmitHandler, useForm } from 'react-hook-form';
 import axios from 'axios';
 import { HiPhoto } from 'react-icons/hi2';
 import MessageInput from './MessageInput';
+import { HiPaperAirplane } from 'react-icons/hi';
+import { BiRotateLeft } from 'react-icons/bi';
 
 function Form() {
 
@@ -25,6 +27,9 @@ function Form() {
     const onSubmit: SubmitHandler<FieldValues> = (data) => {
         //reset the message back to nothing
         setValue('message','',{ shouldValidate: true })
+
+        console.log(data);
+
         axios.post('http://localhost:3000/api/message',{
             data,
             conversationId
@@ -55,8 +60,24 @@ function Form() {
                 register={register}
                 errors={errors}
                 required
+                type={"text"}
                 placeholder="Write a Message"
             />
+            <button 
+                type="submit"
+                className='
+                    rounded-full
+                    p-2
+                    bg-sky-500
+                    cursor-pointer
+                    hover:bg-sky-600
+                    transition
+                    duration-500
+                    rotate-90
+                '
+            >
+                <HiPaperAirplane rotate={90} size={18} className='text-white'/>
+            </button>
         </form>
     </div>
   )

@@ -1,8 +1,5 @@
-import { connect } from "@/db/index"
 import { NextRequest,NextResponse } from "next/server"
-import { User } from "@/models/user.model"
-
-connect()
+import { User } from "@/models"
 
 export async function POST(request:NextRequest, response:NextResponse){
     try {

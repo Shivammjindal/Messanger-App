@@ -1,4 +1,4 @@
-import { Messages } from "@/models/message.model";
+import { Message } from "@/models";
 import { NextRequest,NextResponse } from "next/server";
 
 interface jsonProps{
@@ -16,7 +16,7 @@ export async function POST(request:NextRequest ,response:NextResponse){
             return new NextResponse('Invalid conversation id',{status:400});
         }
 
-        const messages = await Messages.find({
+        const messages = await Message.find({
             conversationId
         })
         .populate('sender')

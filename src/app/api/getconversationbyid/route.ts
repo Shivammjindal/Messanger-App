@@ -1,5 +1,5 @@
 import { NextRequest,NextResponse } from "next/server";
-import { Conversation } from "@/models/conversation.model";
+import { Conversation } from "@/models";
 
 export async function POST(request:NextRequest, response:NextResponse){
 

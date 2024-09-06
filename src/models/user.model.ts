@@ -1,7 +1,7 @@
 import mongoose, { Document } from "mongoose";
 import { InferSchemaType } from "mongoose"
 
-const UserSchema = new mongoose.Schema({
+export const UserSchema = new mongoose.Schema({
     name:{
         type:String,
         required:true,
@@ -63,5 +63,3 @@ const UserSchema = new mongoose.Schema({
 })
 
 export type UserModelType = InferSchemaType<typeof UserSchema> & Document
-
-export const User = mongoose.models.users || mongoose.model<UserModelType>("users",UserSchema)

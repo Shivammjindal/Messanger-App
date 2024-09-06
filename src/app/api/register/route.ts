@@ -1,9 +1,6 @@
 import bcrypt from "bcrypt"
-import {connect} from "@/db"
 import {NextRequest, NextResponse} from "next/server"
-import { User } from "@/models/user.model";
-
-connect().then(() => {console.log("MongoDb connected")});
+import { User } from "@/models";
 
 export async function POST(request:NextRequest, response:NextResponse){
 

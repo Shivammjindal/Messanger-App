@@ -1,7 +1,7 @@
 import mongoose, { Document, InferSchemaType } from "mongoose";
 
 
-const ConversationSchama = new mongoose.Schema({
+export const ConversationSchama = new mongoose.Schema({
     lastMessageAt:{
         type:Date
     },

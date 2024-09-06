@@ -1,5 +1,7 @@
 import mongoose from "mongoose"
 import { MongoClient,ServerApiVersion } from "mongodb"
+import { createModels } from "./models/createModels"
+
 
 let client : MongoClient
 const options = {
@@ -23,12 +25,15 @@ if (process.env.NODE_ENV === "development") {
     client = globalWithMongo._mongoClient
 }
 
-const connect = async () => {
+export const connect = async () => {
     try {
         await mongoose.connect(process.env.DATABASE_URL!)
     } catch (error) {
         console.log("Unable to Connect with mongodb")
     }
 }
+connect().then(() => {
+    createModels()
+})
 
-export { connect, client }
+export { client }

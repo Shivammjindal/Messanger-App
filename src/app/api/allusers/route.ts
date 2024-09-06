@@ -1,9 +1,5 @@
 import { NextRequest,NextResponse } from "next/server";
-import { User } from "@/models/user.model";
-import { connect } from "@/db";
-import { timeStamp } from "console";
-
-connect().then(() => console.log('Database connected'))
+import { User } from "@/models/index";
 
 export const POST = async (request:NextRequest, response:NextResponse) => {
 
@@ -22,5 +18,4 @@ export const POST = async (request:NextRequest, response:NextResponse) => {
     } catch (error) {
         return new NextResponse('Internal Server Error',{status:500})
     }
-    
 }

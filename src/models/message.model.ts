@@ -1,6 +1,6 @@
 import mongoose, { Document, InferSchemaType } from "mongoose";
 
-const messageSchema = new mongoose.Schema({
+export const messageSchema = new mongoose.Schema({
     body:{
         type:String
     },
@@ -12,7 +12,7 @@ const messageSchema = new mongoose.Schema({
     seen:[
         {
             type:mongoose.Schema.Types.ObjectId,
-            ref:'users'
+            ref:"users"
         }
     ],
     conversationId:{
@@ -36,4 +36,4 @@ const messageSchema = new mongoose.Schema({
 
 export type MessageModelType = InferSchemaType<typeof messageSchema> & Document
 
-export const Messages = mongoose.models.messages || mongoose.model<MessageModelType>('messages',messageSchema)
+export const Message = mongoose.models.messages || mongoose.model<MessageModelType>('messages',messageSchema)
