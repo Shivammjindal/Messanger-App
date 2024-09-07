@@ -1,8 +1,14 @@
 import React from 'react'
 
-function Body() {
+import { FullMessageType } from '@/types/model-types'
+
+interface BodyProps{
+  initialMessages : FullMessageType[],
+}
+
+const Body = () => {
   return (
-    <div className='flex-1 overflow-y-auto'>Body</div>
+    <div className='flex-1'>Body</div>
   )
 }
 

@@ -1,7 +1,8 @@
-import { MessageModelType } from "@/models/message.model"
+import { FullMessageType } from "@/types/model-types";
+import axios from "axios";
 
 interface MessageType{
-    data: MessageModelType[]
+    data: FullMessageType[]
 }
 
 // import { client } from "@/db";
@@ -70,20 +71,10 @@ interface MessageType{
 const getMessages = async (
     conversationId:string
 ) => {
-    //we use fetch as fetch automatically do cashing in nextJs
 
-    // const { data }:any = await fetch('http://localhost:3000/getmessages',{
-    //     method:'POST',
-    //     body:JSON.stringify({
-    //         conversationId,
-    //     })
-    // },).then((response) => {
-    //     return response.json();
-    // })
+    const { data }:any = await axios.post('http://localhost:3000/api/getmessages',{conversationId:conversationId})
 
-    // console.log(data)
-
-    return "Hello"
+    return data.messages
 }
 
 export default getMessages

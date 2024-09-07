@@ -6,7 +6,7 @@ import axios from 'axios';
 import { HiPhoto } from 'react-icons/hi2';
 import MessageInput from './MessageInput';
 import { HiPaperAirplane } from 'react-icons/hi';
-import { BiRotateLeft } from 'react-icons/bi';
+import { CldImage, CldUploadButton } from "next-cloudinary"
 
 function Form() {
 
@@ -27,17 +27,26 @@ function Form() {
     const onSubmit: SubmitHandler<FieldValues> = (data) => {
         //reset the message back to nothing
         setValue('message','',{ shouldValidate: true })
-
-        console.log(data);
+        const { message } = data
 
         axios.post('http://localhost:3000/api/message',{
-            data,
+            message,
+            conversationId
+        })
+    }
+
+    const handleUpload = (result:any) => {
+
+        axios.post('http://localhost:3000/api/message',{
+            image:result?.info?.secure_url,
+            // message:"image",
             conversationId
         })
     }
 
   return (
-    <div
+    <>
+        <div
         className='
             py-4
             px-4
@@ -50,7 +59,15 @@ function Form() {
             w-full
         '
     >
-        <HiPhoto size={30} className='text-sky-500'/>
+
+        <CldUploadButton 
+            options={{maxFiles:1}}
+            onSuccess={handleUpload}
+            uploadPreset='ml_default'
+        >
+            <HiPhoto size={30} className='text-sky-500'/> 
+        </CldUploadButton>
+
         <form 
             onSubmit={handleSubmit(onSubmit)}
             className='flex items-center gap-2 lg:gap-4 w-full'
@@ -80,6 +97,7 @@ function Form() {
             </button>
         </form>
     </div>
+    </>
   )
 }
 

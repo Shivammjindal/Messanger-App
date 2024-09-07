@@ -1,16 +1,16 @@
 import { Message } from "@/models";
 import { NextRequest,NextResponse } from "next/server";
 
-interface jsonProps{
-    conversationId:string
-}
-
 export async function POST(request:NextRequest ,response:NextResponse){
 
     try {
         const {
             conversationId
-        }:jsonProps = await request.json()
+        } = await request.json()
+
+
+
+        console.log("Conversation ID : ", conversationId)
         
         if(!conversationId){
             return new NextResponse('Invalid conversation id',{status:400});
@@ -24,6 +24,8 @@ export async function POST(request:NextRequest ,response:NextResponse){
             //newest one at first
             {createdAt:1}
         )
+
+        console.log("Running...")
         
         return NextResponse.json({messages})
     } catch (error) {

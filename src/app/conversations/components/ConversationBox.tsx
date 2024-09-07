@@ -10,6 +10,8 @@ import Avatar from '@/app/users/components/Avatar'
 import useOtherUser from '@/app/hooks/useOtherUser'
 import { FullConversationType } from '@/types/model-types'
 import { UserModelType } from '@/models/user.model'
+import { HiPhoto } from 'react-icons/hi2'
+import axios from 'axios'
 
 interface ConversationPropsType{
     data:FullConversationType
@@ -21,14 +23,18 @@ function ConversationBox({data,selected}:ConversationPropsType) {
     const router = useRouter();
     const otherUser = useOtherUser(data);
     const session = useSession();
-    const handleClick = useCallback(() => {
+
+    console.log('data : ',data)
+
+    const handleClick = useCallback(async () => {
         router.push(`/conversations/${data._id}`)
+        // await axios.post('http://localhost:3000/seenMessage',{conversationId:data._id})
     },[data.id, router])
 
     const lastMessage = useMemo(() => {
         const messages = data.message || []
-        return messages[messages.length-1]
-    },[data.message])  
+        return messages[messages.length-1];
+    },[data.message])
 
     const userEmail = useMemo(() =>{
         return session?.data?.user?.email
@@ -42,16 +48,29 @@ function ConversationBox({data,selected}:ConversationPropsType) {
 
         const seenArray = lastMessage.seen || []
 
+        const { users } = data
+
+        const ide = users.filter((user) => {
+            if(user.email === userEmail){
+                return user
+            }
+        })
+
         if(!userEmail)
             return false;
 
-        return seenArray.filter((user:UserModelType) => user.email === userEmail).length !== 0
+        console.log(seenArray)
+
+        return seenArray.filter((id) => id === ide[0]?._id).length !== 0
 
     },[userEmail,lastMessage])
 
     const lastMessageText = useMemo(() => {
         if(lastMessage?.body ){
             return lastMessage.body
+        }
+        if(lastMessage?.image){
+            return 'Image'
         }
 
         return 'Started a Conversation'
@@ -81,16 +100,27 @@ function ConversationBox({data,selected}:ConversationPropsType) {
             <div className='flex justify-between items-center mb-1'>
                 {data.name || otherUser.name}
             </div>
-            <div>
-                {lastMessage?.createdAt && (
-                    <p>{format(new Date(lastMessage.createdAt), 'p')}</p>
-                )}
-            </div>
-            <div className={clsx(`
-                    text-sm
-                    m-0`,
-                !hasSeen &&`font-semibold`)}>
-                {lastMessageText}
+            <div className='flex justify-between items-center'>
+                <div className={clsx(`
+                        text-sm
+                        font-medium
+                        antialiased
+                        w-28
+                        h-5
+                        overflow-hidden
+                        m-0`,
+                        !hasSeen &&`font-semibold`)}
+                >
+                    <div className='flex items-center gap-1'>
+                        {lastMessage?.image && <div><HiPhoto size={18}/></div>}
+                        {lastMessageText}
+                    </div>
+                </div>
+                <div className='text-xs font-medium text-neutral-500'>
+                    {lastMessage?.createdAt && (
+                        <p>{format(new Date(lastMessage.createdAt), 'p')}</p>
+                    )}
+                </div>
             </div>
         </div>
     </div>

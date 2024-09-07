@@ -33,6 +33,7 @@ async function page({ params }:IParams) {
     <div className='lg:pl-80 h-full w-full'>
       <div className="h-full lg:border-l-[1px] lg:border-gray-200  flex flex-col">
         <Header conversation={conversation}/>
+        {/* <Body initialMessages={messages}/> */}
         <Body/>
         <Form/>
       </div>

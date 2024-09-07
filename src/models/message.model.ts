@@ -4,6 +4,9 @@ export const messageSchema = new mongoose.Schema({
     body:{
         type:String
     },
+    image:{
+        type:String,
+    },
     seenIds:[
         {
             type:String

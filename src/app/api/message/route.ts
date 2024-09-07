@@ -11,34 +11,33 @@ export async function POST(request:NextRequest, response:NextResponse){
         const body = await request.json()
 
         const {
-            data,
+            message,
+            image,
             conversationId
         } = body
 
-        const { message } = data
-
         if(!currUser?._id || !currUser.email){
-            console.log("currUser",currUser)
             return new NextResponse('Unauthorised User',{ status:401 })
         }
 
         const newMessage = await Message.create({
             body:message,
-            //image:image
+            image:image,
             conversationId:conversationId,
             conversation:conversationId,
             sender: currUser._id,
             senderId: currUser._id,
+            seenIds:[currUser._id],
             //the user who sends it imediately seen the message
             seen: [currUser._id]
         })
 
-        const res = await newMessage.populate([
+        await newMessage.populate([
             { path:'seen' },
             { path:'sender' }
         ])
 
-        const updatedConversations = await Conversation.findByIdAndUpdate({_id:conversationId},{
+        await Conversation.findByIdAndUpdate({_id:conversationId},{
             lastMessageAt:new Date(),
             $push:{
                 message:newMessage._id

@@ -14,7 +14,6 @@ interface ConversationListProps{
 
 function ConversationList({initialItems}:ConversationListProps) {
 
-  const router = useRouter()
   const [items, setItems] = useState(initialItems)
   const { conversationId, isOpen } = useConversation()
 

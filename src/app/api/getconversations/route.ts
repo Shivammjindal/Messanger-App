@@ -18,7 +18,6 @@ export async function POST(request:NextRequest, response:NextResponse){
         })
         .populate({
             path:'message',
-            select:'seen sender'
         })
 
         return NextResponse.json(conversation)
