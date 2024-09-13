@@ -14,7 +14,6 @@ export async function POST(request:NextRequest, response:NextResponse){
         } = body
 
         const currUser = user
-        console.log("IDS :: ",userId, currUser._id)
 
         if(!currUser?.id && !currUser?.email){
             return new NextResponse('Unauthorised User',{status:401})
@@ -58,8 +57,6 @@ export async function POST(request:NextRequest, response:NextResponse){
                 users:[currUser._id, userId]
             }
         )
-
-        console.log("New Conversations ",newConversation)
 
         return NextResponse.json(newConversation)
 

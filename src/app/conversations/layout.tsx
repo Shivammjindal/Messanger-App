@@ -9,7 +9,6 @@ interface LayoutProps{
 const ConversationLayout:React.FC<LayoutProps> = async ({children}) => {
 
     const conversations = await getConversation()
-    console.log("conversations",conversations)
 
     return(
         <Sidebar>

@@ -72,7 +72,7 @@ const getMessages = async (
     conversationId:string
 ) => {
 
-    const { data }:any = await axios.post('http://localhost:3000/api/getmessages',{conversationId:conversationId})
+    const { data } = await axios.post('http://localhost:3000/api/getmessages',{conversationId:conversationId})
 
     return data.messages
 }

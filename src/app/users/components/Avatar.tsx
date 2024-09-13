@@ -3,7 +3,7 @@ import Image from 'next/image'
 import { UserModelType } from '@/models/user.model'
 
 interface AvatarProps{
-    currentUser: UserModelType
+    currentUser: UserModelType | undefined
 }
 
 const Avatar: React.FC<AvatarProps> = ({currentUser}) => {
@@ -14,10 +14,12 @@ const Avatar: React.FC<AvatarProps> = ({currentUser}) => {
                 inline-block
                 rounded-full
                 overflow-hidden
-                h-9
-                w-9
-                md:h-9
-                md:w-9
+                h-6
+                w-6
+                sm:h-7
+                sm:w-7
+                md:h-8
+                md:w-8
                 ring-1
                 ring-gray-500
             '>
@@ -37,10 +39,10 @@ const Avatar: React.FC<AvatarProps> = ({currentUser}) => {
                     ring-white
                     top-0
                     right-0
-                    w-2
-                    h-2
-                    md:h-3
-                    md:w-3
+                    w-[7px]
+                    h-[7px]
+                    md:h-2
+                    md:w-2
                 '
             >
             </span>

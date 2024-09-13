@@ -5,6 +5,7 @@ import EmptySpace from '@/app/users/components/EmptySpace'
 import Header from './components/Header'
 import Body from './components/Body'
 import Form from './components/Form'
+import { FullMessageType } from '@/types/model-types'
 
 interface IParams{
   params:{
@@ -14,7 +15,7 @@ interface IParams{
 
 async function page({ params }:IParams) {
 
-  const messages = await getMessages(params.userchat)
+  const messages:FullMessageType[] = await getMessages(params.userchat)
   const conversation = await getConversationbyId({conversationId: params.userchat})
 
   if(!conversation){
@@ -34,7 +35,7 @@ async function page({ params }:IParams) {
       <div className="h-full lg:border-l-[1px] lg:border-gray-200  flex flex-col">
         <Header conversation={conversation}/>
         {/* <Body initialMessages={messages}/> */}
-        <Body/>
+        <Body initialMessages={messages}/>
         <Form/>
       </div>
     </div>

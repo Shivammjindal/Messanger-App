@@ -9,9 +9,7 @@ import clsx from 'clsx'
 import Avatar from '@/app/users/components/Avatar'
 import useOtherUser from '@/app/hooks/useOtherUser'
 import { FullConversationType } from '@/types/model-types'
-import { UserModelType } from '@/models/user.model'
-import { HiPhoto } from 'react-icons/hi2'
-import axios from 'axios'
+import { HiMiniCheck, HiPhoto } from 'react-icons/hi2'
 
 interface ConversationPropsType{
     data:FullConversationType
@@ -23,8 +21,6 @@ function ConversationBox({data,selected}:ConversationPropsType) {
     const router = useRouter();
     const otherUser = useOtherUser(data);
     const session = useSession();
-
-    console.log('data : ',data)
 
     const handleClick = useCallback(async () => {
         router.push(`/conversations/${data._id}`)
@@ -59,11 +55,24 @@ function ConversationBox({data,selected}:ConversationPropsType) {
         if(!userEmail)
             return false;
 
-        console.log(seenArray)
-
         return seenArray.filter((id) => id === ide[0]?._id).length !== 0
 
     },[userEmail,lastMessage])
+
+    const ISent = useMemo(() => {
+
+        const { users } = data
+
+        const ide = users.filter((user) => {
+            if(user.email === userEmail){
+                return user
+            }
+        })
+
+        if(ide[0]?.email === userEmail){
+            return userEmail
+        }
+    },[session?.data?.user?.email])
 
     const lastMessageText = useMemo(() => {
         if(lastMessage?.body ){
@@ -103,17 +112,17 @@ function ConversationBox({data,selected}:ConversationPropsType) {
             <div className='flex justify-between items-center'>
                 <div className={clsx(`
                         text-sm
-                        font-medium
                         antialiased
                         w-28
                         h-5
                         overflow-hidden
                         m-0`,
-                        !hasSeen &&`font-semibold`)}
+                        hasSeen ? `font-normal` : `font-bold`)}
                 >
-                    <div className='flex items-center gap-1'>
+                    <div className='flex relative items-center gap-1'>
                         {lastMessage?.image && <div><HiPhoto size={18}/></div>}
                         {lastMessageText}
+                        {/* {ISent && <div className='absolute top-[1px] right-0 bg-neutral-100'><HiMiniCheck size={16}/></div>} */}
                     </div>
                 </div>
                 <div className='text-xs font-medium text-neutral-500'>
@@ -122,6 +131,7 @@ function ConversationBox({data,selected}:ConversationPropsType) {
                     )}
                 </div>
             </div>
+            
         </div>
     </div>
   )
