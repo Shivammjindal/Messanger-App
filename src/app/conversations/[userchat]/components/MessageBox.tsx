@@ -59,7 +59,7 @@ const MessageBox: React.FC<messageBoxProps> = ({isLast,data}) => {
     const message = clsx(
         'text-sm w-fit overflow-hidden',
         isOwn ? 'bg-blue-500 text-white':'bg-gray-100',
-        data?.image?'rounded-md p-0':'rounded-3xl py-2 px-3'
+        data?.image?'rounded-md p-0':'rounded-xl py-2 px-3'
     )
     const date = new Date(data?.createdAt || Date.now())
 
