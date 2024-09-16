@@ -38,6 +38,7 @@ function Header({
             data={conversation}
             onClose={() => setDrawerOpen(false)}
         />
+        
         <div
             className='
             bg-white

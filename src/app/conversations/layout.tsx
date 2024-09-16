@@ -12,7 +12,7 @@ const ConversationLayout:React.FC<LayoutProps> = async ({children}) => {
 
     return(
         <Sidebar>
-            <div className="h-full">
+            <div className="h-full w-screen lg:w-full">
                 <ConversationList initialItems={conversations}/>
                 {children}
             </div>

@@ -35,7 +35,6 @@ function ConversationList({initialItems}:ConversationListProps) {
           <div>
           </div>
         </div>
-        <div>
           {items.map((item) => {
             return <ConversationBox
               key={`${item._id || ''}`}
@@ -43,7 +42,6 @@ function ConversationList({initialItems}:ConversationListProps) {
               selected={conversationId === item._id}
             />
           })}
-        </div>
       </div>
     </div>
   )

@@ -89,7 +89,8 @@ function ConversationBox({data,selected}:ConversationPropsType) {
     <div
         onClick={handleClick}
         className={clsx(`
-                w-64
+                w-full
+                lg:w-64
                 relative
                 flex
                 items-center

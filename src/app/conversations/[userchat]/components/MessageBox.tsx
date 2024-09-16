@@ -7,6 +7,7 @@ import Avatar from '@/app/users/components/Avatar'
 import { format } from 'date-fns/format'
 import Image from 'next/image'
 
+
 interface messageBoxProps{
     data?:FullMessageType,
     isLast?:boolean
