@@ -1,5 +1,6 @@
 "use client"
 import AuthForm from "./components/AuthForm";
+import { ProfileSetUp } from "../conversations/[userchat]/components/ProfileSetup";
 
 export default function Home() {
     return (

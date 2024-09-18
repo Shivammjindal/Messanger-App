@@ -3,6 +3,8 @@ import { Dialog, DialogPanel, DialogTitle, Transition, TransitionChild } from '@
 import { Fragment, useState } from 'react'
 import { IoWarning } from 'react-icons/io5'
 import { useRouter } from 'next/navigation'
+import { useParams } from 'next/navigation'
+import axios from 'axios'
 
 interface DeleteModelProps{
   setModelOpen: React.Dispatch<React.SetStateAction<boolean>>
@@ -10,15 +12,19 @@ interface DeleteModelProps{
 
 export function MyModal({setModelOpen}:DeleteModelProps) {
 
+  const { userchat } = useParams()
   const router = useRouter()
 
-  const handleChatDelete = async (data:string) => {
-      //await axios.post('http://localhost:3000/api/deleteconversationId',data)
+  const handleChatDelete = async () => {
+      console.log("Delete Chat in Progress ")
+      const data = {
+        conversationId:userchat
+      }
+      await axios.post('http://localhost:3000/api/deleteConversation',data)
       router.push('/conversations')
-      setTimeout(() => {
-          // setModelOpen(false)
-      },100000)
   }
+
+  console.log("params ",userchat)
 
   return (
     <>
@@ -66,7 +72,7 @@ export function MyModal({setModelOpen}:DeleteModelProps) {
                       type="button"
                       className="flex justify-center text-sm md:text-md rounded-md border border-transparent bg-red-100 px-2 py-1 md:px-4 md:py-2 font-medium text-red-900 hover:bg-red-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2"
                       onClick={() => {
-                        handleChatDelete('abc');
+                        handleChatDelete();
                       }}
                     >
                       Yes's I am Sure
