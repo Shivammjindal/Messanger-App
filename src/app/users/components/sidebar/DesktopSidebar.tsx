@@ -5,6 +5,7 @@ import useRoutes from '@/app/hooks/useRoute'
 import DesktopItem from './DesktopItem'
 import Avatar from '../Avatar'
 import { UserModelType } from '@/models/user.model'
+import { ProfileSetUp } from '@/app/conversations/[userchat]/components/ProfileSetup'
 
 interface DesktopSidebarprops{
   currentUser:UserModelType
@@ -13,7 +14,7 @@ interface DesktopSidebarprops{
 function DesktopSidebar({ currentUser }: DesktopSidebarprops) {
   
     const routes = useRoutes();
-    const [isOpen, setIsOpen] = useState(false)
+    const [openProfile, setOpenProfile] = useState<boolean>(false)
 
   return (
     <div className='
@@ -32,7 +33,8 @@ function DesktopSidebar({ currentUser }: DesktopSidebarprops) {
         lg:flex-col
         items-center
         justify-between
-      '>
+      '
+      >
 
       <nav className='mt-4 flex flex-col justify-between'>
         <ul
@@ -68,7 +70,7 @@ function DesktopSidebar({ currentUser }: DesktopSidebarprops) {
         '
       >
         <div
-          onClick={() => setIsOpen(true)}
+          onClick={() => setOpenProfile(!openProfile)}
           className='
             cursor-pointer 
             hover:opacity-75 
@@ -76,6 +78,7 @@ function DesktopSidebar({ currentUser }: DesktopSidebarprops) {
             duration-700'
         >
           <Avatar currentUser={currentUser}/>
+          {openProfile && <ProfileSetUp user={currentUser} setModelOpen={setOpenProfile}/>}
         </div>
       </nav>
     </div>

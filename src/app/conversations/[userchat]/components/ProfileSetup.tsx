@@ -1,17 +1,38 @@
 'use client'
 import { Transition,Dialog, TransitionChild, DialogPanel, DialogTitle } from "@headlessui/react"
-import { Fragment, useState } from "react"
+import { Fragment, useMemo, useState } from "react"
 import Avatar from "./Profile"
 import { UserModelType } from "@/models/user.model"
 import { MdEdit } from "react-icons/md"
+import axios from "axios"
+import { CldUploadButton } from "next-cloudinary"
 
 interface ProfileSetupProps{
-    user: UserModelType
+    user: UserModelType,
+    setModelOpen: React.Dispatch<React.SetStateAction<boolean>>
 }
 
-const ProfileSetUp:React.FC<ProfileSetupProps> = ({user}) => {
+const ProfileSetUp:React.FC<ProfileSetupProps> = ({user,setModelOpen}) => {
 
-    const [modelOpen, setModelOpen] = useState(false)
+    const [image, setImage] = useState<string | null | undefined>(user?.image)
+    const [name, setName] = useState<string>(user?.name)
+    const [editing, setEditing] = useState<boolean>(true);
+
+    const enableUpdate = useMemo(() => {
+        if(name == user?.name && image == user?.image ) return true
+        else false
+    },[name,image])
+
+    const handleUpdateProfile = async (data : {image:string | undefined | null, name:string}) => {
+
+        const updatedData = {
+            id: user._id,
+            name: name,
+            image: image,
+        }
+        await axios.post('http://localhost:3000/api/users/update', updatedData);
+        console.log('User Updates Successfully');
+    }
 
     return (
         <>
@@ -54,21 +75,34 @@ const ProfileSetUp:React.FC<ProfileSetupProps> = ({user}) => {
                         <div className="flex flex-col mt-5 mb-4 items-center justify-center gap-3">
                             <div className="relative w-fit">
                                 <div className="absolute z-40 right-2 top-4 md:right-1">
-                                        <MdEdit className="rounded-full text-xl p-1 bg-neutral-200"/>
+                                    <CldUploadButton 
+                                        options={{maxFiles:1}}
+                                        onSuccess={(result:any) => { setImage(result?.info?.secure_url) }}
+                                        uploadPreset='ml_default'
+                                    >
+                                            <MdEdit className="rounded-full text-xl p-1 bg-neutral-200"/>
+                                    </CldUploadButton>
                                 </div>
                                 <div className="mt-4 flex gap-4 justify-center">
                                     <Avatar currentUser={ user }/>
                                 </div>
                             </div>
                             
-                            <div className="flex gap-1 items-center mt-3">
-                                <div id="name">{user.name}</div>
+                            <div className="flex gap-1 justify-center items-center mt-3">
+                                
+                                <input type="text" value={name} onChange={(e) => { setName(e.target.value) }} className="px-1 text-center rounded-md disabled:bg-slate-100" disabled={editing}/>
+
                                 <div className="bg-neutral-200 flex gap-1 items-center justify-center mx-1 px-1 rounded-md text-sm">
-                                    <div className="text-sm py-1">
+                                    <div className="text-sm py-1" onClick={ () => { setEditing(!editing) }}>
                                         <MdEdit/>
                                     </div>
                                 </div>
                             </div>
+                            <button className="bg-green-600 mt-6 hover:bg-green-700 transition duration-500 rounded-md px-2 py-1 disabled:cursor-not-allowed disabled:hover:bg-green-500 text-neutral-100" onClick={() => {
+                                handleUpdateProfile({ image:image, name:name })
+                            }} disabled={enableUpdate}>
+                                Update
+                            </button>
                         </div>
                         </DialogPanel>
                     </TransitionChild>

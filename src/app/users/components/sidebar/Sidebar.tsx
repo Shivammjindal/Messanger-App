@@ -16,7 +16,6 @@ export default async function Sidebar({
   return (
     <div className='h-full'>
       <DesktopSidebar currentUser={ user } />
-      <ProfileSetUp user={user}/>
       <MobileFooter/>
       {/* Making Side Taskmanager here */}
       <main className='h-full'>
