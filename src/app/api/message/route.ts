@@ -8,6 +8,7 @@ import { FullConversationType } from "@/types/model-types"
 export async function POST(request:NextRequest, response:NextResponse){
 
     try {
+        
         const { user } = await getCurrentUser()
         const currUser = user
         const body = await request.json()

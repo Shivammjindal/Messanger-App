@@ -6,6 +6,7 @@ import { FullMessageType } from '@/types/model-types'
 import useConversation from '@/app/hooks/useConversation'
 import axios from 'axios'
 import { find } from 'lodash'
+import { MessageModelType } from '@/models/message.model'
 
 interface BodyProps{
   initialMessages : FullMessageType[],
@@ -18,19 +19,17 @@ const Body: React.FC<BodyProps> = ({initialMessages}) => {
   const { conversationId } = useConversation();
 
   useEffect(() => {
-
     axios.post(`http://localhost:3000/api/conversations/${conversationId}/seen`)
-    
   },[conversationId])
 
   useEffect(() => {
     //thats place where we subscribe to our pusher.
     pusherClient.subscribe(conversationId)
-    bottomRef.current?.scrollIntoView()
+    bottomRef?.current?.scrollIntoView()
 
     const handleMessage = (message : FullMessageType) => {
 
-      axios.post(`http://localhost:3000/api/conversations/${conversationId}/seen`)
+      axios.post(`http://localhost:3000/api/conversations/${conversationId}/seen`,conversationId)
       // console.log('running')
       setMessage((current) => {
 
@@ -41,16 +40,41 @@ const Body: React.FC<BodyProps> = ({initialMessages}) => {
 
         // console.log('current message ',current)
         // console.log("Find : ",find(current,{_id: message._id}))
-
         return [...current, message]
       })
+
+      bottomRef?.current?.scrollIntoView()
+    }
+
+    const handleUpdateMessage = (newMessage:FullMessageType) => {
+      console.log('curr -> ',message)
+      setMessage((current) => current.map((currentMessage:FullMessageType) => {
+        if(currentMessage._id === newMessage._id){
+          return newMessage
+        }
+
+        return currentMessage
+      }))
+      // setMessage((current) => {
+      //   console.log("Current Message ",current)
+      //   // current.map((currentMessage) => {
+      //   //   if(currentMessage._id === message._id){
+      //   //     return message
+      //   //   }
+
+      //   //   return currentMessage
+      //   // })
+      //   return current
+      // })
     }
 
     pusherClient.bind('new:message',handleMessage)
+    pusherClient.bind('message:Updated',handleUpdateMessage)
 
     return () => {
       pusherClient.unsubscribe(conversationId)
-      pusherClient.unbind('new:message',handleMessage);
+      pusherClient.unbind('new:message',handleMessage)
+      pusherClient.unbind('message:Updated',handleUpdateMessage)
     }
   },[])
 
@@ -59,7 +83,7 @@ const Body: React.FC<BodyProps> = ({initialMessages}) => {
       {/* use ref helps in percisting value throughout rerender */}
       {
         message.map((msg,i) => (
-          <MessageBox key={msg._id || msg.id} isLast={i === message.length-1} data={msg}/>
+          <MessageBox key={msg?._id || msg?.id || ''} isLast={i === message.length-1} data={msg}/>
         ))
       }
     </div>

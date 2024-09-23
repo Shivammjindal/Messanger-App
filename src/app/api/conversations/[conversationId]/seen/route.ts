@@ -2,12 +2,14 @@ import getCurrentUser from "@/app/actions/getCurrentUser";
 import { Conversation, Message } from "@/models";
 import { NextRequest,NextResponse } from "next/server";
 import { FullConversationType } from "@/types/model-types";
+import { pusherServer } from "@/app/libs/pusher";
 
 interface IParams{
     conversationId?:string
 }
 
 export async function POST(request:NextRequest,{ params } : { params: IParams }, response:NextResponse){
+    
     try {
 
         const { user } = await getCurrentUser()
@@ -62,7 +64,9 @@ export async function POST(request:NextRequest,{ params } : { params: IParams },
                 seen:currentUser._id,
                 seenIds:currentUser._id
             }
-        })
+        },{returnDocument:"after"}).populate({path:'sender'}).populate({path:'seen'})
+
+        pusherServer.trigger(conversationId,'message:Updated',updateMessage)
 
         return NextResponse.json(conversation)
     } catch (error) {

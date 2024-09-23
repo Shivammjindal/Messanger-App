@@ -27,7 +27,6 @@ const MessageBox: React.FC<messageBoxProps> = ({isLast,data}) => {
     })
     .map((user) => user.name)
 
-
     seenList.sort()
 
     let finalSeen = []
