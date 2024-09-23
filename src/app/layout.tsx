@@ -18,7 +18,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      
+      {/* <script src="https://js.pusher.com/8.2.0/pusher.min.js"></script> */}
         {/* if we do not make context than we got a hydration error means div can not be a child of html that's why always make context of such things */}
         {/* <Toaster position="top-center"/> */}
         <body className={inter.className}>

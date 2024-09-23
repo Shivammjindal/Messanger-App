@@ -2,6 +2,8 @@ import {NextRequest,NextResponse} from "next/server"
 import getCurrentUser from "@/app/actions/getCurrentUser"
 import { Message } from "@/models"
 import { Conversation } from "@/models"
+import { pusherServer } from "@/app/libs/pusher"
+import { FullConversationType } from "@/types/model-types"
 
 export async function POST(request:NextRequest, response:NextResponse){
 
@@ -37,15 +39,27 @@ export async function POST(request:NextRequest, response:NextResponse){
             { path:'sender' }
         ])
 
-        await Conversation.findByIdAndUpdate({_id:conversationId},{
+        const updatedConversation:FullConversationType = await Conversation.findByIdAndUpdate({_id:conversationId},{
             lastMessageAt:new Date(),
             $push:{
                 message:newMessage._id
             }
-        }).populate([
+        },{returnDocument:"after"}).populate([
             { path:'users' },
-            { path:'message', select:'seen'}
+            { path:'message' }
         ])
+
+        //this helps in serving our chats
+        await pusherServer.trigger(conversationId,'new:message', newMessage )
+        const lastMessage = updatedConversation.message[updatedConversation.message.length-1]
+
+        //this help in serving sidebars where we see's our conversation.
+        updatedConversation.users.map(async (user) => {
+            await pusherServer.trigger(user.email!, 'conversation:Update',{
+                id: conversationId,
+                messages: [lastMessage]
+            })
+        })
         
         return NextResponse.json(newMessage)
 
