@@ -66,7 +66,11 @@ export async function POST(request:NextRequest,{ params } : { params: IParams },
             }
         },{returnDocument:"after"}).populate({path:'sender'}).populate({path:'seen'})
 
-        pusherServer.trigger(conversationId,'message:Updated',updateMessage)
+        await pusherServer.trigger(currentUser.email,'conversation:Update',{
+            id:conversationId,
+            message: [updateMessage]
+        })
+        await pusherServer.trigger(conversationId,'message:Updated',updateMessage)
 
         return NextResponse.json(conversation)
     } catch (error) {

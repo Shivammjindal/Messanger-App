@@ -5,7 +5,8 @@ import EmptySpace from '@/app/users/components/EmptySpace'
 import Header from './components/Header'
 import Body from './components/Body'
 import Form from './components/Form'
-import { FullMessageType } from '@/types/model-types'
+import { FullConversationType, FullMessageType } from '@/types/model-types'
+import { pusherClient } from '@/app/libs/pusher'
 
 interface IParams{
   params:{
@@ -16,7 +17,7 @@ interface IParams{
 async function page({ params }:IParams) {
 
   const messages:FullMessageType[] = await getMessages(params.userchat)
-  const conversation = await getConversationbyId({conversationId: params.userchat})
+  const conversation:FullConversationType = await getConversationbyId({conversationId: params.userchat})
 
   if(!conversation){
     return (

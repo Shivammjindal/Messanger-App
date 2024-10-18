@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import ToasterContext from "./context/ToasterContext";
 import AuthContext from "./context/AuthContext";
+import StoreProvider from "./StoreProvider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -22,10 +23,12 @@ export default function RootLayout({
         {/* if we do not make context than we got a hydration error means div can not be a child of html that's why always make context of such things */}
         {/* <Toaster position="top-center"/> */}
         <body className={inter.className}>
-          <AuthContext>
-            <ToasterContext/>
-            {children}
-          </AuthContext>
+          <StoreProvider>
+            <AuthContext>
+              <ToasterContext/>
+              {children}
+            </AuthContext>
+          </StoreProvider>
         </body>
     </html>
   );

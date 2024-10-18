@@ -3,19 +3,22 @@ import React from 'react'
 import clsx from 'clsx'
 import useConversation from '@/app/hooks/useConversation'
 import { useState } from 'react'
-import { useRouter } from 'next/navigation'
+import GroupChatModel from './GroupChat'
 import { MdOutlineGroupAdd } from 'react-icons/md'
 import ConversationBox from './ConversationBox'
 import { FullConversationType } from '@/types/model-types'
+import { UserModelType } from '@/models/user.model'
 
 interface ConversationListProps{
-    initialItems:FullConversationType[]
+    initialItems:FullConversationType[],
+    users:UserModelType[]
 }
 
-function ConversationList({initialItems}:ConversationListProps) {
+function ConversationList({initialItems,users}:ConversationListProps) {
 
   const [items, setItems] = useState(initialItems)
   const { conversationId, isOpen } = useConversation()
+  const [ openModal, setOpenModel ] = useState(false);
 
   return (
     <div
@@ -28,8 +31,11 @@ function ConversationList({initialItems}:ConversationListProps) {
         <div className='flex justify-center lg:justify-between pl-4 mb-4 pt-3'>
           <div className='flex flex-row justify-between w-56 items-center text-xl lg:text-[1.5rem] font-medium'>
             Messages
-            <div className='text-gray-700 p-[.4rem] bg-gray-200 rounded-lg'>
+            <div className='text-gray-700 p-[.2rem] bg-gray-200 rounded-lg' onClick={() => {
+              setOpenModel(!openModal)
+            }}>
               <MdOutlineGroupAdd size={20} cursor={'pointer'}/>
+              {openModal && <GroupChatModel active={openModal} setActive={setOpenModel} users={users}/>}
             </div>
           </div>
           <div>

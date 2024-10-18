@@ -1,9 +1,12 @@
 import { FullMessageType } from "@/types/model-types";
 import axios from "axios";
+import { pusherServer } from "../libs/pusher";
+import { MessageModelType } from "@/models/message.model";
 
 interface MessageType{
     data: FullMessageType[]
 }
+
 
 // import { client } from "@/db";
 
@@ -73,6 +76,10 @@ const getMessages = async (
 ) => {
 
     const { data } = await axios.post('http://localhost:3000/api/getmessages',{conversationId:conversationId})
+
+    console.log('Message Fetching Done')
+
+    pusherServer.trigger(conversationId,'user:active',{ status: true})
 
     return data.messages
 }

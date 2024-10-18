@@ -6,13 +6,16 @@ import { FullMessageType } from '@/types/model-types'
 import useConversation from '@/app/hooks/useConversation'
 import axios from 'axios'
 import { find } from 'lodash'
-import { MessageModelType } from '@/models/message.model'
+import { getSessions } from '@/app/actions/GetSessions'
+import { getSession } from 'next-auth/react'
 
 interface BodyProps{
   initialMessages : FullMessageType[],
 }
 
 const Body: React.FC<BodyProps> = ({initialMessages}) => {
+
+  const session = getSession()
 
   const [message, setMessage] = useState(initialMessages)
   const bottomRef = useRef<HTMLDivElement>(null)
@@ -24,7 +27,7 @@ const Body: React.FC<BodyProps> = ({initialMessages}) => {
 
   useEffect(() => {
     //thats place where we subscribe to our pusher.
-    pusherClient.subscribe(conversationId)
+    const channel = pusherClient.subscribe(conversationId)
     bottomRef?.current?.scrollIntoView()
 
     const handleMessage = (message : FullMessageType) => {
@@ -52,7 +55,6 @@ const Body: React.FC<BodyProps> = ({initialMessages}) => {
         if(currentMessage._id === newMessage._id){
           return newMessage
         }
-
         return currentMessage
       }))
       // setMessage((current) => {

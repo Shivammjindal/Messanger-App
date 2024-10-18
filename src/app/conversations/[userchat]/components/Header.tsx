@@ -8,7 +8,8 @@ import { HiChevronLeft } from 'react-icons/hi'
 import Avatar from '@/app/users/components/Avatar'
 import { HiEllipsisHorizontal, HiEllipsisVertical } from 'react-icons/hi2'
 import { ProfileDrawer } from './ProfileDrawer'
-
+import { pusherClient } from '@/app/libs/pusher'
+import { useEffect } from 'react'
 
 interface HeaderProps{
     conversation:FullConversationType
@@ -20,13 +21,31 @@ function Header({
 
     const otherUser = useOtherUser(conversation);
     const [drawerOpen , setDrawerOpen] = useState(false)
+    const [status, setStatus] = useState('Not Active')
+
+    useEffect(() => {
+
+        const statusHandler = () => {
+            console.log("Status Data ")
+        }
+
+        const conversationId:any = conversation?._id
+
+        pusherClient.subscribe(conversationId)
+        pusherClient.bind('user:active',statusHandler)
+
+        return () => {
+            pusherClient.unsubscribe(`${conversation._id}`)
+            pusherClient.unbind('user:active',statusHandler)
+        }
+    },[conversation?._id])
 
     const statusText = useMemo(() => {
         if(conversation.isGroup){
             return `${conversation.users.length} members`
         }
 
-        return 'Active'
+        return status
     },[conversation])
 
 
