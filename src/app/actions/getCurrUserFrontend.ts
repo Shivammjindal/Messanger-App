@@ -1,16 +1,14 @@
 import { getSessions } from "./GetSessions"
 import axios from "axios"
 
-const getCurrentUser = async () => {
+const getCurrentUserClient = async (email:string) => {
 
     try {
 
-        const session = await  getSessions()
-        if(!session?.user?.email){
-            return null
+        if(!email){
+            return null;
         }
-        
-        const email = session?.user?.email
+
         const user = await axios.post('http://localhost:3000/api/users',{ email })
         if(!user){
             return null;
@@ -22,4 +20,4 @@ const getCurrentUser = async () => {
     }
 }
 
-export default getCurrentUser
+export default getCurrentUserClient

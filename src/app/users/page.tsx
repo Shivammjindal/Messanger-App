@@ -1,7 +1,5 @@
 import React from 'react'
 import EmptySpace from './components/EmptySpace'
-import { ProfileSetUp } from '../conversations/[userchat]/components/ProfileSetup'
-import getCurrentUser from '../actions/getCurrentUser'
 
 export function Users() {
 

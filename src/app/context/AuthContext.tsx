@@ -7,6 +7,7 @@ interface AuthContextProps{
 }
 
 const AuthContext = ({children}:AuthContextProps) => {
+
     return (
         <SessionProvider>
             {children}

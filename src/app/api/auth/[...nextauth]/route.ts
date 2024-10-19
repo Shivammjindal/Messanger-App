@@ -66,7 +66,10 @@ export const authOptions: AuthOptions = {
             console.log("Credentials ",credentials)
             return true
         },
-    }
+        async session({session,user,token}){
+            return session
+        }
+    },
 }
 
 const handler = NextAuth(authOptions)

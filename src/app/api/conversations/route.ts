@@ -24,15 +24,14 @@ export async function POST(request:NextRequest, response:NextResponse){
         }
         
         if(isGroup){
-            const newConversation = await Conversation.create({
-                name,
-                isGroup,
-                users:[
+            // const newConversation = await Conversation.create({
+            //     // name,
+            //     // isGroup,
+            //     // users:[
                     
-                ]
-            })
-
-            return NextResponse.json(newConversation)
+            //     // ]
+            // })
+            // return NextResponse.json({members})
         }
 
         const existingConversation = await Conversation.findOne({

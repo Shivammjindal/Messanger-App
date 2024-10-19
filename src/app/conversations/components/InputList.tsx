@@ -35,7 +35,7 @@ export function InputList({users} : UserProps) {
         }
       }}>
         <div className="relative mt-1">
-          <div className="relative w-full cursor-default overflow-hidden rounded-lg bg-white text-left shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-white/75 focus-visible:ring-offset-2 focus-visible:ring-offset-teal-300 sm:text-sm">
+          <div className="relative w-full cursor-default overflow-hidden rounded-lg bg-white text-left shadow-none border-[1px] border-neutral-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/75 focus-visible:ring-offset-2 focus-visible:ring-offset-teal-300 sm:text-sm">
             <ComboboxInput 
               className={'outline-none w-full border-none py-2 px-2 text-neutral-600'}
               displayValue={
