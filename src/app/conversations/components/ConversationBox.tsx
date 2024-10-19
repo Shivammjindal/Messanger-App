@@ -9,11 +9,19 @@ import clsx from 'clsx'
 import Avatar from '@/app/users/components/Avatar'
 import useOtherUser from '@/app/hooks/useOtherUser'
 import { FullConversationType } from '@/types/model-types'
-import { HiMiniCheck, HiPhoto } from 'react-icons/hi2'
+import { HiPhoto } from 'react-icons/hi2'
+import { useEffect } from 'react'
+import { pusherClient } from '@/app/libs/pusher'
+import { MessageModelType } from '@/models/message.model'
 
 interface ConversationPropsType{
     data:FullConversationType
     selected?:boolean
+}
+
+interface PusherProps{
+    conversationId: string,
+    updateMessage: MessageModelType
 }
 
 function ConversationBox({data,selected}:ConversationPropsType) {
@@ -103,7 +111,7 @@ function ConversationBox({data,selected}:ConversationPropsType) {
             selected?`bg-neutral-100` : `bg-white`,
         )}
     >
-        <Avatar currentUser={otherUser} />
+        <Avatar isGroup={data.isGroup} currentUser={otherUser}/>
         <div
             className='min-w-0 flex-1'
         >

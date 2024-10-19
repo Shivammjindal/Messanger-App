@@ -79,7 +79,7 @@ function Header({
                             <HiChevronLeft size={32}/>
                         </Link>
                     </div>
-                    <Avatar currentUser={otherUser}/>
+                    <Avatar isGroup={conversation.isGroup} currentUser={otherUser}/>
 
                     <div className='flex flex-col gap-0 items-start justify-center'>
                         <div className='text-md font-medium antialiased'>

@@ -1,6 +1,8 @@
 import getCurrentUser from "@/app/actions/getCurrentUser"
 import { NextRequest,NextResponse } from "next/server"
 import { Conversation } from "@/models"
+import { UserModelType } from "@/models/user.model"
+import { pusherServer } from "@/app/libs/pusher"
 
 export async function POST(request:NextRequest, response:NextResponse){
     try {
@@ -24,14 +26,25 @@ export async function POST(request:NextRequest, response:NextResponse){
         }
         
         if(isGroup){
-            // const newConversation = await Conversation.create({
-            //     // name,
-            //     // isGroup,
-            //     // users:[
-                    
-            //     // ]
-            // })
-            // return NextResponse.json({members})
+            const newConversation = await Conversation.create({
+                name,
+                isGroup,
+                users: members.map((member:UserModelType) => member._id),
+                userIds: members.map((member:UserModelType) => member._id)
+            })
+            
+            await newConversation.populate('users')
+
+            // console.log('New Conversation Found',newConversation)
+
+            newConversation.users.forEach((user:UserModelType) => {
+                if(user.email){
+                    console.log('sending triggers',user.email)
+                    pusherServer.trigger(user.email,'conversation:new',newConversation)
+                }
+            })
+            
+            return NextResponse.json({newConversation})
         }
 
         const existingConversation = await Conversation.findOne({
@@ -56,6 +69,13 @@ export async function POST(request:NextRequest, response:NextResponse){
                 users:[currUser._id, userId]
             }
         )
+
+        await newConversation.populate('users')
+        newConversation.users.forEach((user:UserModelType) => {
+            if(user.email){
+                pusherServer.trigger(user.email,'conversation:new',newConversation)
+            }
+        })
 
         return NextResponse.json(newConversation)
 

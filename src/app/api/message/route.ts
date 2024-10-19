@@ -51,12 +51,13 @@ export async function POST(request:NextRequest, response:NextResponse){
         ])
 
         //this helps in serving our chats
-        await pusherServer.trigger(conversationId,'new:message', newMessage )
+        await pusherServer.trigger(conversationId,'new:message', newMessage)
         const lastMessage = updatedConversation.message[updatedConversation.message.length-1]
 
         //this help in serving sidebars where we see's our conversation.
         updatedConversation.users.map(async (user) => {
-            await pusherServer.trigger(user.email!, 'conversation:Update',{
+            console.log('sendingTrigger',user.email)
+            await pusherServer.trigger(user.email, 'conversation:Update',{
                 id: conversationId,
                 messages: [lastMessage]
             })

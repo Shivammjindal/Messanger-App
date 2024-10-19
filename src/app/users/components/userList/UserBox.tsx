@@ -62,7 +62,7 @@ const UserBox = ({data}:UserBoxProps) => {
                     cursor-pointer
                 '
             >
-                <Avatar currentUser={data}/>
+                <Avatar isGroup={false} currentUser={data}/>
             </div>
             <div className='flex flex-row items-center font-medium antialiased self-center'>
                 {data.name}

@@ -1,13 +1,16 @@
 "use client"
-import React from 'react'
+import React, { useMemo } from 'react'
 import clsx from 'clsx'
 import useConversation from '@/app/hooks/useConversation'
-import { useState } from 'react'
+import { useState,useEffect } from 'react'
 import GroupChatModel from './GroupChat'
 import { MdOutlineGroupAdd } from 'react-icons/md'
 import ConversationBox from './ConversationBox'
 import { FullConversationType } from '@/types/model-types'
 import { UserModelType } from '@/models/user.model'
+import { pusherClient } from '@/app/libs/pusher'
+import { useSession } from 'next-auth/react'
+import { find } from 'lodash'
 
 interface ConversationListProps{
     initialItems:FullConversationType[],
@@ -19,6 +22,44 @@ function ConversationList({initialItems,users}:ConversationListProps) {
   const [items, setItems] = useState(initialItems)
   const { conversationId, isOpen } = useConversation()
   const [ openModal, setOpenModel ] = useState(false);
+  const session = useSession()
+
+  const pusherKey = useMemo(() => {
+    return session?.data?.user?.email
+  },[])
+
+  useEffect(() => {
+    if(!pusherKey){
+
+      console.log("Pusher Key : ",pusherKey)
+      return ;
+    }
+
+    const handleConversationNew = (conversation:FullConversationType) => {
+
+      setItems((current:FullConversationType[]) => {
+        if(find(current, {_id: conversation._id})){
+          return current;
+        }
+
+        return [...current, conversation]
+      })
+    }
+
+    const handleConversationUpdate = () => {
+      console.log('Conversation Update Needed Rearrangements')
+    }
+
+    pusherClient.subscribe(pusherKey)
+    pusherClient.bind('conversation:new',handleConversationNew)
+    pusherClient.bind('conversation:Update',handleConversationUpdate);
+
+    return () => {
+      pusherClient.unsubscribe(pusherKey)
+      pusherClient.unbind('conversation:new',handleConversationNew)
+      pusherClient.unbind('conversation:Update',handleConversationUpdate)
+    }
+  },[pusherKey])
 
   return (
     <div

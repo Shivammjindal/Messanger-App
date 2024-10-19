@@ -66,13 +66,18 @@ export async function POST(request:NextRequest,{ params } : { params: IParams },
             }
         },{returnDocument:"after"}).populate({path:'sender'}).populate({path:'seen'})
 
-        await pusherServer.trigger(currentUser.email,'conversation:Update',{
+        await pusherServer.trigger(conversationId!,'conversation:Update',{
             id:conversationId,
             message: [updateMessage]
         })
-        await pusherServer.trigger(conversationId,'message:Updated',updateMessage)
+        
+        if(lastMessage.seenIds.indexOf(currentUser._id) !== -1){
+            return NextResponse.json(conversation)
+        }
 
-        return NextResponse.json(conversation)
+        await pusherServer.trigger(conversationId!,'message:updated',updateMessage)
+
+        return NextResponse.json(updateMessage)
     } catch (error) {
         console.log("E:/",error)
         return new NextResponse('Intersal Server Error in Seen Route', { status:500 })

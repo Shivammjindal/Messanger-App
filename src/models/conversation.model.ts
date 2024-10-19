@@ -1,6 +1,5 @@
 import mongoose, { Document, InferSchemaType } from "mongoose";
 
-
 export const ConversationSchama = new mongoose.Schema({
     lastMessageAt:{
         type:Date

@@ -77,7 +77,7 @@ function DesktopSidebar({ currentUser }: DesktopSidebarprops) {
             transition 
             duration-700'
         >
-          <Avatar currentUser={currentUser}/>
+          <Avatar isGroup={false} currentUser={currentUser}/>
           {openProfile && <ProfileSetUp user={currentUser} setModelOpen={setOpenProfile}/>}
         </div>
       </nav>

@@ -6,16 +6,12 @@ import { FullMessageType } from '@/types/model-types'
 import useConversation from '@/app/hooks/useConversation'
 import axios from 'axios'
 import { find } from 'lodash'
-import { getSessions } from '@/app/actions/GetSessions'
-import { getSession } from 'next-auth/react'
 
 interface BodyProps{
   initialMessages : FullMessageType[],
 }
 
 const Body: React.FC<BodyProps> = ({initialMessages}) => {
-
-  const session = getSession()
 
   const [message, setMessage] = useState(initialMessages)
   const bottomRef = useRef<HTMLDivElement>(null)
@@ -27,12 +23,14 @@ const Body: React.FC<BodyProps> = ({initialMessages}) => {
 
   useEffect(() => {
     //thats place where we subscribe to our pusher.
-    const channel = pusherClient.subscribe(conversationId)
+    pusherClient.subscribe(conversationId)
     bottomRef?.current?.scrollIntoView()
 
     const handleMessage = (message : FullMessageType) => {
 
+      //alert everyone that we have seen the message.
       axios.post(`http://localhost:3000/api/conversations/${conversationId}/seen`,conversationId)
+
       // console.log('running')
       setMessage((current) => {
 
@@ -50,13 +48,14 @@ const Body: React.FC<BodyProps> = ({initialMessages}) => {
     }
 
     const handleUpdateMessage = (newMessage:FullMessageType) => {
-      console.log('curr -> ',message)
+
       setMessage((current) => current.map((currentMessage:FullMessageType) => {
         if(currentMessage._id === newMessage._id){
           return newMessage
         }
         return currentMessage
       }))
+
       // setMessage((current) => {
       //   console.log("Current Message ",current)
       //   // current.map((currentMessage) => {
@@ -71,12 +70,12 @@ const Body: React.FC<BodyProps> = ({initialMessages}) => {
     }
 
     pusherClient.bind('new:message',handleMessage)
-    pusherClient.bind('message:Updated',handleUpdateMessage)
+    pusherClient.bind('message:updated',handleUpdateMessage)
 
     return () => {
       pusherClient.unsubscribe(conversationId)
       pusherClient.unbind('new:message',handleMessage)
-      pusherClient.unbind('message:Updated',handleUpdateMessage)
+      pusherClient.unbind('message:updated',handleUpdateMessage)
     }
   },[])
 

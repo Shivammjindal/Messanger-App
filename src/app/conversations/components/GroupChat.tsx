@@ -1,7 +1,7 @@
 "use client"
 import { UserModelType } from '@/models/user.model'
 import { Dialog, DialogPanel, DialogTitle, Transition, TransitionChild } from '@headlessui/react'
-import { Fragment } from 'react'
+import { Fragment, useState } from 'react'
 import { InputList } from './InputList'
 import { useAppSelector } from '@/app/hooks/redux'
 import { MdDelete } from 'react-icons/md'
@@ -21,6 +21,7 @@ interface GroupChatProps{
 export default function GroupChatModel({ users,active,setActive }:GroupChatProps) {
 
   const selector = useAppSelector(state => state.groupchat)
+  const [name, setName] = useState<string>('')
   const dispatch = useAppDispatch()
   const { data } = useSession()
 
@@ -31,9 +32,15 @@ export default function GroupChatModel({ users,active,setActive }:GroupChatProps
   const createGroup = async () => {
     
     const { user } = await getCurrentUserClient(data?.user?.email!)
-    let users = [...selector,user]
+    const users = [...selector,user]
+
+    const response = await axios.post('http://localhost:3000/api/conversations',{
+      isGroup: true,
+      members: users,
+      name : name
+    })
     
-    
+    console.log(response)
     setActive(false)
     dispatch(resetMember()); 
   }
@@ -76,7 +83,7 @@ export default function GroupChatModel({ users,active,setActive }:GroupChatProps
                   </DialogTitle>
 
                   <div>
-                    <input type="text" name="" id="" className='focus:outline-none ring-1 ring-gray-300 rounded-md py-1 px-2' placeholder='Group Name'/>
+                    <input type="text" name="" id="" className='focus:outline-none ring-1 ring-gray-300 rounded-md py-1 px-2' onChange={(e) => {setName(e.target.value)}} placeholder='Group Name'/>
                   </div>
                   <div> 
                     <InputList users={users}/>
