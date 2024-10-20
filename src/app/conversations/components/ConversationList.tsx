@@ -6,18 +6,25 @@ import { useState,useEffect } from 'react'
 import GroupChatModel from './GroupChat'
 import { MdOutlineGroupAdd } from 'react-icons/md'
 import ConversationBox from './ConversationBox'
-import { FullConversationType } from '@/types/model-types'
+import { FullConversationType, FullMessageType } from '@/types/model-types'
 import { UserModelType } from '@/models/user.model'
 import { pusherClient } from '@/app/libs/pusher'
 import { useSession } from 'next-auth/react'
 import { find } from 'lodash'
+import { current } from '@reduxjs/toolkit'
 
 interface ConversationListProps{
     initialItems:FullConversationType[],
-    users:UserModelType[]
+    users:UserModelType[],
+    currentUser:UserModelType
 }
 
-function ConversationList({initialItems,users}:ConversationListProps) {
+interface conversationUpdateProps{
+  id:string,
+  messages:FullMessageType
+}
+
+function ConversationList({currentUser,initialItems,users}:ConversationListProps) {
 
   const [items, setItems] = useState(initialItems)
   const { conversationId, isOpen } = useConversation()
@@ -30,7 +37,6 @@ function ConversationList({initialItems,users}:ConversationListProps) {
 
   useEffect(() => {
     if(!pusherKey){
-
       console.log("Pusher Key : ",pusherKey)
       return ;
     }
@@ -46,13 +52,28 @@ function ConversationList({initialItems,users}:ConversationListProps) {
       })
     }
 
-    const handleConversationUpdate = () => {
-      console.log('Conversation Update Needed Rearrangements')
+    const handleConversationUpdate = ({id,messages}:conversationUpdateProps) => {
+      console.log('Updating Conversations')
+      // axios.post('http://localhost:3000/api/getconversations',{userId : currentUser._id,email: currentUser.email})
+      setItems((current:FullConversationType[]) => current.map((conversations:FullConversationType) => {
+        if(conversations._id === id){
+          conversations.message.push(messages)
+          return conversations
+        }
+
+        return conversations
+      }))
+    }
+
+    const handleConversationAlign = (sender:string[]) => {
+      console.log("Sender ",sender)
+      console.log('Updating Conversation Successfully Called')
     }
 
     pusherClient.subscribe(pusherKey)
     pusherClient.bind('conversation:new',handleConversationNew)
     pusherClient.bind('conversation:Update',handleConversationUpdate);
+    pusherClient.bind('new:conversation:align',handleConversationAlign)
 
     return () => {
       pusherClient.unsubscribe(pusherKey)
@@ -60,6 +81,10 @@ function ConversationList({initialItems,users}:ConversationListProps) {
       pusherClient.unbind('conversation:Update',handleConversationUpdate)
     }
   },[pusherKey])
+
+  useEffect(() => {
+    console.log('UPDATED ITEMS CONSOLE LOG THE ITEMS GETS UPDATED',items)
+  },[items])
 
   return (
     <div
@@ -79,16 +104,17 @@ function ConversationList({initialItems,users}:ConversationListProps) {
               {openModal && <GroupChatModel active={openModal} setActive={setOpenModel} users={users}/>}
             </div>
           </div>
-          <div>
-          </div>
         </div>
-          {items.map((item) => {
-            return <ConversationBox
-              key={`${item._id || ''}`}
-              data={item}
-              selected={conversationId === item._id}
-            />
+        <div className='flex flex-col overflow-scroll'>
+          {
+            items.map((item) => {
+              return <ConversationBox
+                key={`${item._id || ''}`}
+                data={item}
+                selected={conversationId === item._id}
+              />
           })}
+        </div>
       </div>
     </div>
   )

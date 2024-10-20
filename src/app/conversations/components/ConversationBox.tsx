@@ -36,9 +36,11 @@ function ConversationBox({data,selected}:ConversationPropsType) {
     },[data.id, router])
 
     const lastMessage = useMemo(() => {
+        console.log('Running For new meaagw')
         const messages = data.message || []
+        console.log(messages[data.message.length-1])
         return messages[messages.length-1];
-    },[data.message])
+    },[data.message.length])
 
     const userEmail = useMemo(() =>{
         return session?.data?.user?.email
@@ -84,6 +86,7 @@ function ConversationBox({data,selected}:ConversationPropsType) {
 
     const lastMessageText = useMemo(() => {
         if(lastMessage?.body ){
+            console.log('Body -> ',lastMessage?.body)
             return lastMessage.body
         }
         if(lastMessage?.image){
@@ -91,7 +94,7 @@ function ConversationBox({data,selected}:ConversationPropsType) {
         }
 
         return 'Started a Conversation'
-    },[])
+    },[lastMessage])
 
   return (
     <div
