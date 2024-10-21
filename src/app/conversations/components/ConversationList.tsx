@@ -52,21 +52,20 @@ function ConversationList({currentUser,initialItems,users}:ConversationListProps
       })
     }
 
-    const handleConversationUpdate = async ({id,messages}:conversationUpdateProps) => {
-      console.log('Updating Conversations')
+    const handleConversationUpdate = async () => {
+      console.log('Updating Conversations ')
       const { data } = await axios.post('http://localhost:3000/api/getconversations',{userId : currentUser._id,email: currentUser.email})
-      setItems(data);
-      // setItems((current:FullConversationType[]) => current.map((conversations:FullConversationType) => {
-      //   if(conversations._id === id){
-      //     conversations.message.push(messages)
-      //     return conversations
-      //   }
+      setItems(data)
+    }
 
-      //   return conversations
-      // }))
+    const handleConversationSeen = async () => {
+      console.log('updating seen messages for the side bar');
+      const { data } = await axios.post('http://localhost:3000/api/getconversations',{userId : currentUser._id,email: currentUser.email})
+      setItems(data)
     }
 
     pusherClient.subscribe(pusherKey)
+    pusherClient.bind('conversation:seen:update',handleConversationSeen)
     pusherClient.bind('conversation:new',handleConversationNew)
     pusherClient.bind('conversation:Update',handleConversationUpdate)
 

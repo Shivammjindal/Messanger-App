@@ -18,7 +18,7 @@ const Body: React.FC<BodyProps> = ({initialMessages}) => {
   const { conversationId } = useConversation();
 
   useEffect(() => {
-    axios.post(`http://localhost:3000/api/conversations/${conversationId}/seen`)
+    axios.post(`http://localhost:3000/api/conversations/${conversationId}/seen`,conversationId)
   },[conversationId])
 
   useEffect(() => {
@@ -26,10 +26,10 @@ const Body: React.FC<BodyProps> = ({initialMessages}) => {
     pusherClient.subscribe(conversationId)
     bottomRef?.current?.scrollIntoView()
 
-    const handleMessage = (message : FullMessageType) => {
+    const handleMessage = async (message : FullMessageType) => {
 
       //alert everyone that we have seen the message.
-      axios.post(`http://localhost:3000/api/conversations/${conversationId}/seen`,conversationId)
+      await axios.post(`http://localhost:3000/api/conversations/${conversationId}/seen`,conversationId)
 
       // console.log('running')
       setMessage((current) => {

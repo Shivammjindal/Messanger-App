@@ -23,20 +23,6 @@ export async function POST(request:NextRequest, response:NextResponse){
         .populate({
             path:'message',
         })
-
-        // let sender:string[] = []
-
-        // conversation.map((conversation) => {
-        //     conversation.users.map((user) => {
-        //         if(sender.indexOf(user.email) === -1){
-        //             sender.push(user.email)
-        //         }
-        //     })
-        // })
-
-        // if(email){
-        //     await pusherServer.trigger(email,'new:conversation:align',sender)
-        // }
         
         return NextResponse.json(conversation)
 

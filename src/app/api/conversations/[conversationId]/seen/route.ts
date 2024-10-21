@@ -16,6 +16,10 @@ export async function POST(request:NextRequest,{ params } : { params: IParams },
         const currentUser = user
         const { conversationId } = params
 
+        
+
+
+
         console.log("Current User ",currentUser._id)
 
         if(!currentUser?.email){
@@ -65,17 +69,16 @@ export async function POST(request:NextRequest,{ params } : { params: IParams },
                 seenIds:currentUser._id
             }
         },{returnDocument:"after"}).populate({path:'sender'}).populate({path:'seen'})
-
-        await pusherServer.trigger(conversationId!,'conversation:Update',{
-            id:conversationId,
-            message: [updateMessage]
-        })
         
         if(lastMessage.seenIds.indexOf(currentUser._id) !== -1){
             return NextResponse.json(conversation)
         }
 
         await pusherServer.trigger(conversationId!,'message:updated',updateMessage)
+
+        // conversation.users.map( async (user) => {
+        await pusherServer.trigger(user.email,'conversation:seen:update',{status: true})
+        // })
 
         return NextResponse.json(updateMessage)
     } catch (error) {

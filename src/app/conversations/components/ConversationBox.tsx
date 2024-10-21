@@ -10,8 +10,6 @@ import Avatar from '@/app/users/components/Avatar'
 import useOtherUser from '@/app/hooks/useOtherUser'
 import { FullConversationType } from '@/types/model-types'
 import { HiPhoto } from 'react-icons/hi2'
-import { useEffect } from 'react'
-import { pusherClient } from '@/app/libs/pusher'
 import { MessageModelType } from '@/models/message.model'
 
 interface ConversationPropsType{
@@ -32,7 +30,6 @@ function ConversationBox({data,selected}:ConversationPropsType) {
 
     const handleClick = useCallback(async () => {
         router.push(`/conversations/${data._id}`)
-        // await axios.post('http://localhost:3000/seenMessage',{conversationId:data._id})
     },[data.id, router])
 
     const lastMessage = useMemo(() => {
@@ -40,7 +37,7 @@ function ConversationBox({data,selected}:ConversationPropsType) {
         const messages = data.message || []
         console.log(messages[data.message.length-1])
         return messages[messages.length-1];
-    },[data.message.length])
+    },[data.message.length,data.message])
 
     const userEmail = useMemo(() =>{
         return session?.data?.user?.email

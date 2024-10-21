@@ -56,7 +56,6 @@ export async function POST(request:NextRequest, response:NextResponse){
 
         //this help in serving sidebars where we see's our conversation.
         updatedConversation.users.map(async (user) => {
-            console.log('Sending Trigger',user.email);
             await pusherServer.trigger(user.email, 'conversation:Update',{
                 id: conversationId,
                 messages : lastMessage
