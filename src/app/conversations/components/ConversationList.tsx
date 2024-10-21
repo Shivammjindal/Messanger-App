@@ -66,11 +66,6 @@ function ConversationList({currentUser,initialItems,users}:ConversationListProps
       // }))
     }
 
-    const handleConversationAlign = (sender:string[]) => {
-      console.log("Sender ",sender)
-      console.log('Updating Conversation Successfully Called')
-    }
-
     pusherClient.subscribe(pusherKey)
     pusherClient.bind('conversation:new',handleConversationNew)
     pusherClient.bind('conversation:Update',handleConversationUpdate)
