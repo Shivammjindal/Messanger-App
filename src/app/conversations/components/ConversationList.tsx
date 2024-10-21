@@ -11,7 +11,7 @@ import { UserModelType } from '@/models/user.model'
 import { pusherClient } from '@/app/libs/pusher'
 import { useSession } from 'next-auth/react'
 import { find } from 'lodash'
-import { current } from '@reduxjs/toolkit'
+import axios from 'axios'
 
 interface ConversationListProps{
     initialItems:FullConversationType[],
@@ -52,17 +52,18 @@ function ConversationList({currentUser,initialItems,users}:ConversationListProps
       })
     }
 
-    const handleConversationUpdate = ({id,messages}:conversationUpdateProps) => {
+    const handleConversationUpdate = async ({id,messages}:conversationUpdateProps) => {
       console.log('Updating Conversations')
-      // axios.post('http://localhost:3000/api/getconversations',{userId : currentUser._id,email: currentUser.email})
-      setItems((current:FullConversationType[]) => current.map((conversations:FullConversationType) => {
-        if(conversations._id === id){
-          conversations.message.push(messages)
-          return conversations
-        }
+      const { data } = await axios.post('http://localhost:3000/api/getconversations',{userId : currentUser._id,email: currentUser.email})
+      setItems(data);
+      // setItems((current:FullConversationType[]) => current.map((conversations:FullConversationType) => {
+      //   if(conversations._id === id){
+      //     conversations.message.push(messages)
+      //     return conversations
+      //   }
 
-        return conversations
-      }))
+      //   return conversations
+      // }))
     }
 
     const handleConversationAlign = (sender:string[]) => {
@@ -72,8 +73,7 @@ function ConversationList({currentUser,initialItems,users}:ConversationListProps
 
     pusherClient.subscribe(pusherKey)
     pusherClient.bind('conversation:new',handleConversationNew)
-    pusherClient.bind('conversation:Update',handleConversationUpdate);
-    pusherClient.bind('new:conversation:align',handleConversationAlign)
+    pusherClient.bind('conversation:Update',handleConversationUpdate)
 
     return () => {
       pusherClient.unsubscribe(pusherKey)

@@ -5,7 +5,7 @@ import { NextRequest,NextResponse } from "next/server"
 
 export async function POST(request:NextRequest, response:NextResponse){
     try {
-        const {userId,email} = await request.json()
+        const {userId} = await request.json()
 
         console.log("User Id : ", userId)
 
@@ -24,20 +24,19 @@ export async function POST(request:NextRequest, response:NextResponse){
             path:'message',
         })
 
-        let sender:string[] = []
+        // let sender:string[] = []
 
-        conversation.map((conversation) => {
-            conversation.users.map((user) => {
-                if(sender.indexOf(user.email) === -1){
-                    sender.push(user.email)
-                }
-            })
-        })
+        // conversation.map((conversation) => {
+        //     conversation.users.map((user) => {
+        //         if(sender.indexOf(user.email) === -1){
+        //             sender.push(user.email)
+        //         }
+        //     })
+        // })
 
-        if(email){
-            // console.log(email)
-            await pusherServer.trigger(email,'new:conversation:align',sender)
-        }
+        // if(email){
+        //     await pusherServer.trigger(email,'new:conversation:align',sender)
+        // }
         
         return NextResponse.json(conversation)
 
