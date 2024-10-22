@@ -1,12 +1,14 @@
 import NextAuth, {AuthOptions} from "next-auth";
-import Credentials, { CredentialsProvider } from "next-auth/providers/credentials";
+import Credentials from "next-auth/providers/credentials";
 import GithubProvider from "next-auth/providers/github";
 import GoogleProvider from "next-auth/providers/google"
-import {User} from "@/models"
 import bcrypt from "bcrypt"
 import { MongoDBAdapter } from "@auth/mongodb-adapter";
 import { client } from "@/server";
 import { Adapter } from "next-auth/adapters";
+import { pusherServer } from "@/app/libs/pusher";
+import { User } from "@/models";
+import { UserModelType } from "@/models/user.model";
 
 export const authOptions: AuthOptions = {
     adapter: MongoDBAdapter(client) as Adapter,
@@ -42,8 +44,6 @@ export const authOptions: AuthOptions = {
                     user.hashedPassword
                 )
 
-                console.log("isCorrectPassword",isCorrectPassword)
-
                 if(!isCorrectPassword){
                     throw new Error('Invalid Credentials')
                 }
@@ -64,6 +64,13 @@ export const authOptions: AuthOptions = {
             console.log("Profile ",profile)
             console.log("Email ",email)
             console.log("Credentials ",credentials)
+
+            const users = await User.find({ email : {$ne: user.email} })
+
+            users.map(async (currentUser) => {
+                console.log('Sending Trigger ',currentUser.email);
+                await pusherServer.trigger(currentUser.email!,'userlist:update',{user})
+            })
             return true
         },
         async session({session,user,token}){
