@@ -19,27 +19,24 @@ interface ConversationListProps{
     currentUser:UserModelType
 }
 
-interface conversationUpdateProps{
-  id:string,
-  messages:FullMessageType
-}
-
 function ConversationList({currentUser,initialItems,users}:ConversationListProps) {
 
   const [items, setItems] = useState(initialItems)
   const { conversationId, isOpen } = useConversation()
   const [ openModal, setOpenModel ] = useState(false);
+  const [loading, setLoading] = useState(true);
   const session = useSession()
 
   const pusherKey = useMemo(() => {
     return session?.data?.user?.email
-  },[])
+  },[session?.data?.user?.email])
 
   useEffect(() => {
     if(!pusherKey){
-      console.log("Pusher Key : ",pusherKey)
       return ;
     }
+
+    setLoading(false);
 
     const handleConversationNew = (conversation:FullConversationType) => {
 
@@ -74,14 +71,15 @@ function ConversationList({currentUser,initialItems,users}:ConversationListProps
       pusherClient.unbind('conversation:new',handleConversationNew)
       pusherClient.unbind('conversation:Update',handleConversationUpdate)
     }
-  },[pusherKey])
+  },[session?.data?.user?.email])
 
   useEffect(() => {
     console.log('UPDATED ITEMS CONSOLE LOG THE ITEMS GETS UPDATED',items)
   },[items])
 
   return (
-    <div
+    <div>
+    {!loading ? <div
       className={clsx(
         'lg:fixed overflow-y-scroll lg:left-[2.7rem] lg:top-0 pb-20',
           isOpen? "hidden lg:block" : "block w-full left-0"
@@ -110,6 +108,7 @@ function ConversationList({currentUser,initialItems,users}:ConversationListProps
           })}
         </div>
       </div>
+    </div> : <div className='flex justify-center'>Loading...</div>}
     </div>
   )
 }
