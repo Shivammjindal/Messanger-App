@@ -12,7 +12,7 @@ import { LoadingComponent } from '../components/Loading'
 import { useParams } from 'next/navigation'
 import axios from 'axios'
 
-function page() {
+function Page() {
 
   const { userchat }:any = useParams()
   const [messages, setMessages] = useState<null | FullMessageType[]>(null);
@@ -53,4 +53,4 @@ function page() {
   )
 }
 
-export default page
+export default Page
