@@ -12,7 +12,7 @@ interface DeleteModelProps{
 
 export function MyModal({setModelOpen}:DeleteModelProps) {
 
-  const { userchat } = useParams()
+  const { userchat }:any = useParams()
   const router = useRouter()
 
   const handleChatDelete = async () => {
@@ -75,7 +75,7 @@ export function MyModal({setModelOpen}:DeleteModelProps) {
                         handleChatDelete();
                       }}
                     >
-                      Yes's I am Sure
+                      Yes&apos;s I am Sure
                     </button>
                     <button
                       type="button"
