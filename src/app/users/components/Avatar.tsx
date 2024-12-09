@@ -1,6 +1,7 @@
 import React from 'react'
 import Image from 'next/image'
 import { UserModelType } from '@/models/user.model'
+import useActiveList from '@/app/hooks/useActivelist'
 
 interface AvatarProps{
     isGroup:boolean,
@@ -9,6 +10,8 @@ interface AvatarProps{
 
 const Avatar: React.FC<AvatarProps> = ({isGroup,currentUser}) => {
 
+    const { members } = useActiveList()
+    const isActive = members.indexOf(currentUser?.email!) !== -1
 
     if(isGroup){
         return (
@@ -33,23 +36,25 @@ const Avatar: React.FC<AvatarProps> = ({isGroup,currentUser}) => {
                         fill
                     />
                 </div>
-                <span
-                    className='
-                        absolute
-                        block
-                        rounded-full
-                        bg-green-500
-                        ring-2
-                        ring-white
-                        top-0
-                        right-0
-                        w-[7px]
-                        h-[7px]
-                        md:h-2
-                        md:w-2
-                    '
-                >
-                </span>
+                {isActive && (
+                    <span
+                        className='
+                            absolute
+                            block
+                            rounded-full
+                            bg-green-500
+                            ring-2
+                            ring-white
+                            top-0
+                            right-0
+                            w-[7px]
+                            h-[7px]
+                            md:h-2
+                            md:w-2
+                        '
+                    >
+                    </span>
+                )}
             </div>
         )
     }
@@ -78,7 +83,8 @@ const Avatar: React.FC<AvatarProps> = ({isGroup,currentUser}) => {
                     fill
                 />
             </div>
-            <span
+            {
+            isActive && <span
                 className='
                     absolute
                     block
@@ -95,6 +101,7 @@ const Avatar: React.FC<AvatarProps> = ({isGroup,currentUser}) => {
                 '
             >
             </span>
+    }
         </div>
     
     );

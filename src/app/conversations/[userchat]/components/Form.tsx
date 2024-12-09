@@ -6,7 +6,7 @@ import axios from 'axios';
 import { HiPhoto } from 'react-icons/hi2';
 import MessageInput from './MessageInput';
 import { HiPaperAirplane } from 'react-icons/hi';
-import { CldImage, CldUploadButton } from "next-cloudinary"
+import { CldUploadButton } from "next-cloudinary"
 
 function Form() {
 
@@ -46,7 +46,7 @@ function Form() {
 
   return (
     <>
-        <div
+    <div
         className='
             py-4
             px-4

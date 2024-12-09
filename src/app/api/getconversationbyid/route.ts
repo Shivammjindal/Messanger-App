@@ -6,6 +6,7 @@ export async function POST(request:NextRequest, response:NextResponse){
 
     try { 
         const { conversationId } = await request.json();
+        console.log("conversation ide : ",conversationId)
 
         if(!conversationId){
             new NextResponse('Invalid Data',{status:400})

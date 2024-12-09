@@ -11,12 +11,23 @@ import { UserModelType } from '@/models/user.model'
 import { pusherClient } from '@/app/libs/pusher'
 import { useSession } from 'next-auth/react'
 import { find } from 'lodash'
-import axios from 'axios'
+import { LoadingComponent } from './Loading'
+import { useRouter } from 'next/navigation'
+import { HiRefresh } from 'react-icons/hi'
 
 interface ConversationListProps{
     initialItems:FullConversationType[],
     users:UserModelType[],
     currentUser:UserModelType
+}
+
+interface ConversationUpdateProps{
+  id: string,
+  messages : FullMessageType
+}
+
+interface removeProps{
+  id: string
 }
 
 function ConversationList({currentUser,initialItems,users}:ConversationListProps) {
@@ -26,12 +37,14 @@ function ConversationList({currentUser,initialItems,users}:ConversationListProps
   const [ openModal, setOpenModel ] = useState(false);
   const [loading, setLoading] = useState(true);
   const session = useSession()
+  const router = useRouter()
 
   const pusherKey = useMemo(() => {
     return session?.data?.user?.email
   },[session?.data?.user?.email])
 
   useEffect(() => {
+
     if(!pusherKey){
       return ;
     }
@@ -49,33 +62,50 @@ function ConversationList({currentUser,initialItems,users}:ConversationListProps
       })
     }
 
-    const handleConversationUpdate = async () => {
-      console.log('Updating Conversations ')
-      const { data } = await axios.post('http://localhost:3000/api/getconversations',{userId : currentUser._id,email: currentUser.email})
-      setItems(data)
+    // const handleConversationUpdate = async (conversation: FullConversationType) => {
+    //   console.log("Conversation Update Trigger ",conversation)
+    //   console.log("Items ",items)
+    //   const { data } = await axios.post('http://localhost:3000/api/getconversations',{userId : currentUser._id,email: currentUser.email})
+    //   setItems(data)
+    // }
+
+    // const handleConversationSeen = async () => {
+    //   console.log('updating seen messages for the side bar');
+    //   const { data } = await axios.post('http://localhost:3000/api/getconversations',{userId : currentUser._id,email: currentUser.email})
+    //   setItems(data)
+    // }
+
+    const conversationUpdate = (conversation: ConversationUpdateProps) => {
+
+      setItems((current) => current.map((currentConversation) => {
+        if(currentConversation._id === conversation.id){
+          currentConversation.message.push(conversation.messages);
+          currentConversation.lastMessageAt = conversation.messages.createdAt
+          return currentConversation
+        }
+        return currentConversation
+      }).sort((a,b) => new Date(b.lastMessageAt!).getTime()-new Date(a.lastMessageAt!).getTime()))
     }
 
-    const handleConversationSeen = async () => {
-      console.log('updating seen messages for the side bar');
-      const { data } = await axios.post('http://localhost:3000/api/getconversations',{userId : currentUser._id,email: currentUser.email})
-      setItems(data)
+    const handleConversationRemove = (conversation : removeProps) => {
+      setItems((current) => current.filter((convo) => convo._id !== conversation.id))
+      router.push('/conversations')
     }
 
     pusherClient.subscribe(pusherKey)
-    pusherClient.bind('conversation:seen:update',handleConversationSeen)
+    // pusherClient.bind('conversation:seen:update',handleConversationSeen)
     pusherClient.bind('conversation:new',handleConversationNew)
-    pusherClient.bind('conversation:Update',handleConversationUpdate)
+    pusherClient.bind('conversation:update',conversationUpdate)
+    pusherClient.bind('conversation:remove',handleConversationRemove)
 
     return () => {
       pusherClient.unsubscribe(pusherKey)
       pusherClient.unbind('conversation:new',handleConversationNew)
-      pusherClient.unbind('conversation:Update',handleConversationUpdate)
+      pusherClient.unbind('conversation:update',conversationUpdate)
+      // pusherClient.unbind('conversation:seen:update',handleConversationSeen)
+      pusherClient.unbind('conversation:remove',handleConversationRemove)
     }
-  },[session?.data?.user?.email])
-
-  useEffect(() => {
-    console.log('UPDATED ITEMS CONSOLE LOG THE ITEMS GETS UPDATED',items)
-  },[items])
+  },[session?.data?.user?.email, conversationId, router])
 
   return (
     <div>
@@ -89,6 +119,9 @@ function ConversationList({currentUser,initialItems,users}:ConversationListProps
         <div className='flex justify-center lg:justify-between pl-4 mb-4 pt-3'>
           <div className='flex flex-row justify-between w-56 items-center text-xl lg:text-[1.5rem] font-medium'>
             Messages
+            <div className='flex text-sm p-1 bg-neutral-200 rounded-lg justify-center items-center font-light cursor-pointer' onClick={() => window.location.reload()}>
+              <HiRefresh size={20}/>
+            </div>
             <div className='text-gray-700 p-[.2rem] bg-gray-200 rounded-lg' onClick={() => {
               setOpenModel(!openModal)
             }}>
@@ -108,7 +141,7 @@ function ConversationList({currentUser,initialItems,users}:ConversationListProps
           })}
         </div>
       </div>
-    </div> : <div className='flex justify-center'>Loading...</div>}
+    </div> : <div className='flex w-full h-screen items-center justify-center'><LoadingComponent/></div>}
     </div>
   )
 }

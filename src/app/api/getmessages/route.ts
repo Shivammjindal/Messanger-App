@@ -22,7 +22,6 @@ export async function POST(request:NextRequest ,response:NextResponse){
             path:'seen'
         })
         .sort(
-            //newest one at first
             {createdAt:1}
         )
         

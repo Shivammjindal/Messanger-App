@@ -12,8 +12,9 @@
     "@auth/mongodb-adapter": "^3.4.2",
     "@headlessui/react": "^2.1.8",
     "@heroicons/react": "^2.1.5",
-    "@pusher/push-notifications-server": "^1.2.6",
+    "@pusher/push-notifications-server": "^1.0.1",
     "@reduxjs/toolkit": "^2.3.0",
+    "@types/react-spinner": "^0.2.3",
     "axios": "^1.7.3",
     "bcrypt": "^5.1.1",
     "clsx": "^2.1.1",
@@ -21,8 +22,8 @@
     "lodash": "^4.17.21",
     "mongodb": "^6.8.0",
     "mongoose": "^8.5.1",
-    "next": "14.2.5",
-    "next-auth": "^4.24.7",
+    "next": "^14.2.20",
+    "next-auth": "^4.24.11",
     "next-cloudinary": "^6.12.0",
     "pusher": "^5.2.0",
     "pusher-js": "^8.4.0-rc2",
@@ -32,7 +33,9 @@
     "react-hot-toast": "^2.4.1",
     "react-icons": "^5.2.1",
     "react-redux": "^9.1.2",
-    "react-select": "^5.8.0"
+    "react-select": "^5.8.0",
+    "react-spinners": "^0.15.0",
+    "zustand": "^5.0.2"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.2",

@@ -1,31 +1,42 @@
-import React from 'react'
+"use client"
+import React, { useState } from 'react'
 import { getConversationbyId } from '@/app/actions/getConversationByid'
 import getMessages from '@/app/actions/getMessages'
 import EmptySpace from '@/app/users/components/EmptySpace'
 import Header from './components/Header'
 import Body from './components/Body'
 import Form from './components/Form'
+import { useEffect } from 'react'
 import { FullConversationType, FullMessageType } from '@/types/model-types'
-import { pusherClient } from '@/app/libs/pusher'
+import { LoadingComponent } from '../components/Loading'
+import { useParams } from 'next/navigation'
+import axios from 'axios'
 
-interface IParams{
-  params:{
-    userchat:string
+function page() {
+
+  const { userchat }:any = useParams()
+  const [messages, setMessages] = useState<null | FullMessageType[]>(null);
+  const [conversation, setConversation] = useState<null | FullConversationType>(null)
+
+  const GetRequirements = async () => {
+    const { data } = await axios.post('http://localhost:3000/api/getmessages',{conversationId: userchat})
+    const conversationData = await axios.post('http://localhost:3000/api/getconversationbyid',{ conversationId:userchat })
+
+    setConversation(conversationData.data);
+    setMessages(data.messages);
   }
-}
 
-async function page({ params }:IParams) {
+  useEffect(() => {
+    GetRequirements();
+  },[userchat])
 
-  const messages:FullMessageType[] = await getMessages(params.userchat)
-  const conversation:FullConversationType = await getConversationbyId({conversationId: params.userchat})
-
-  if(!conversation){
+  if(!conversation || !messages){
     return (
       <div
         className='lg:pl-80 h-full'
       >
-        <div className='h-full flex flex-col'>
-          <EmptySpace/>
+        <div className='h-full flex justify-center items-center'>
+          <LoadingComponent/>
         </div>
       </div>
     )
@@ -34,9 +45,8 @@ async function page({ params }:IParams) {
   return (
     <div className='lg:pl-80 h-full w-full'>
       <div className="h-full lg:border-l-[1px] lg:border-gray-200  flex flex-col">
-        <Header conversation={conversation}/>
-        {/* <Body initialMessages={messages}/> */}
-        <Body initialMessages={messages}/>
+        <Header conversation={conversation!}/>
+        <Body initialMessages={messages!}/>
         <Form/>
       </div>
     </div>

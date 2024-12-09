@@ -15,7 +15,7 @@ export const POST = async (request:NextRequest, response:NextResponse) => {
         const newUser = await User.findOneAndUpdate({_id:id }, {
             name : name,
             image : image
-        },{returnDocument:"after"})
+        },{ returnDocument:"after" })
 
         console.log(newUser)
 

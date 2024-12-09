@@ -4,7 +4,10 @@ import UserBox from "./UserBox";
 import { UserModelType } from "@/models/user.model";
 import { useSession } from "next-auth/react";
 import { pusherClient } from "@/app/libs/pusher";
+import { LoadingComponent } from "@/app/conversations/components/Loading";
 import axios from "axios";
+import { HiRefresh } from "react-icons/hi";
+import { useRouter } from "next/navigation";
 
 interface UserListProps{
     items: UserModelType[]
@@ -60,8 +63,11 @@ export const UserList = ({items}:UserListProps) => {
                 left-0
             ">
                 <div className="text-2xl font-semibold antialiased lg:mt-3 pb-2 lg:block mt-2 border-b-[1px] lg:border-b-[1px] flex justify-center">
-                    <div className="lg:ml-3">
+                    <div className="flex lg:gap-32 gap-10 lg:ml-3">
                         Chats
+                        <div className='flex text-sm p-1 bg-neutral-200 rounded-lg justify-center items-center font-light cursor-pointer' onClick={() => window.location.reload()}>
+                            <HiRefresh size={20}/>
+                        </div>
                     </div>
                 </div>
                 {
@@ -69,7 +75,7 @@ export const UserList = ({items}:UserListProps) => {
                         <UserBox key={`${item._id}`} data={item}/>
                     ))
                 }
-            </aside> : <div>Loading...</div>}
+            </aside> : <div className="h-screen w-screen flex items-center justify-center"><LoadingComponent/></div>}
         </div>
     )
 }

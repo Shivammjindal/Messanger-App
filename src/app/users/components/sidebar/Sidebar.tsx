@@ -3,7 +3,6 @@ import DesktopSidebar from './DesktopSidebar'
 import getCurrentUser from '@/app/actions/getCurrentUser'
 import MobileFooter from './MobileFooter'
 import { UserModelType } from '@/models/user.model'
-import { ProfileSetUp } from '@/app/conversations/[userchat]/components/ProfileSetup'
 
 export default async function Sidebar({
   children
@@ -16,7 +15,7 @@ export default async function Sidebar({
   return (
     <div className='h-full'>
       <DesktopSidebar currentUser={ user } />
-      <MobileFooter/>
+      <MobileFooter currentUser={user}/>
       {/* Making Side Taskmanager here */}
       <main className='h-full'>
         {children}

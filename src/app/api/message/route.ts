@@ -45,18 +45,19 @@ export async function POST(request:NextRequest, response:NextResponse){
             $push:{
                 message:newMessage._id
             }
-        },{returnDocument:"after"}).populate([
+        },{ returnDocument:"after" }).populate([
             { path:'users' },
             { path:'message' }
         ])
 
-        //this helps in serving our chats
+        //this helps in serving our chats 
         await pusherServer.trigger(conversationId,'new:message', newMessage)
+
         const lastMessage = updatedConversation.message[updatedConversation.message.length-1]
 
         //this help in serving sidebars where we see's our conversation.
         updatedConversation.users.map(async (user) => {
-            await pusherServer.trigger(user.email, 'conversation:Update',{
+            await pusherServer.trigger(user.email!, 'conversation:update',{
                 id: conversationId,
                 messages : lastMessage
             })

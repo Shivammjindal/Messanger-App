@@ -90,7 +90,7 @@ function ConversationBox({data,selected}:ConversationPropsType) {
             return 'Image'
         }
 
-        return 'Started a Conversation'
+        return 'New Conversation'
     },[lastMessage])
 
   return (
@@ -122,7 +122,6 @@ function ConversationBox({data,selected}:ConversationPropsType) {
                 <div className={clsx(`
                         text-sm
                         antialiased
-                        w-28
                         h-5
                         overflow-hidden
                         m-0`,

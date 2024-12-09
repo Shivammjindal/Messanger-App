@@ -8,7 +8,6 @@ import { client } from "@/server";
 import { Adapter } from "next-auth/adapters";
 import { pusherServer } from "@/app/libs/pusher";
 import { User } from "@/models";
-import { UserModelType } from "@/models/user.model";
 
 export const authOptions: AuthOptions = {
     adapter: MongoDBAdapter(client) as Adapter,

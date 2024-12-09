@@ -5,7 +5,9 @@ import useRoutes from '@/app/hooks/useRoute'
 import DesktopItem from './DesktopItem'
 import Avatar from '../Avatar'
 import { UserModelType } from '@/models/user.model'
-import { ProfileSetUp } from '@/app/conversations/[userchat]/components/ProfileSetup'
+import ProfileSetUp from '@/app/users/components/sidebar/ProfileSetup'
+import { CldUploadButton } from 'next-cloudinary'
+import { useRouter } from 'next/navigation'
 
 interface DesktopSidebarprops{
   currentUser:UserModelType
@@ -14,6 +16,7 @@ interface DesktopSidebarprops{
 function DesktopSidebar({ currentUser }: DesktopSidebarprops) {
   
     const routes = useRoutes();
+    const router = useRouter()
     const [openProfile, setOpenProfile] = useState<boolean>(false)
 
   return (
@@ -70,7 +73,7 @@ function DesktopSidebar({ currentUser }: DesktopSidebarprops) {
         '
       >
         <div
-          onClick={() => setOpenProfile(!openProfile)}
+          onClick={() => {setOpenProfile(true)}}
           className='
             cursor-pointer 
             hover:opacity-75 

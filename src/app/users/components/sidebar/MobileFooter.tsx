@@ -4,11 +4,20 @@ import DesktopItem from './DesktopItem'
 import useRoutes from '@/app/hooks/useRoute'
 import MobileItem from './MobileItem'
 import useConversation from '@/app/hooks/useConversation'
+import Avatar from '../Avatar'
+import { useState } from 'react'
+import ProfileSetUp from './ProfileSetup'
+import { UserModelType } from '@/models/user.model'
 
-const MobileFooter = () => {
+interface MobileFooterProps{
+  currentUser:UserModelType
+}
+
+const MobileFooter = ({ currentUser }: MobileFooterProps) => {
 
     const routes = useRoutes()
     const { isOpen } = useConversation()
+    const [openProfile, setOpenProfile] = useState<boolean>(false)
 
     if(isOpen){
         return null
@@ -53,6 +62,11 @@ const MobileFooter = () => {
                 />
             ))
           }
+
+          <div onClick={() => setOpenProfile(true)}>
+            <Avatar isGroup={false} currentUser={currentUser}/>
+            {openProfile && <ProfileSetUp user={currentUser} setModelOpen={setOpenProfile}/>}
+          </div>
         </ul>
       </nav>
     </div>

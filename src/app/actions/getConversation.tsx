@@ -1,6 +1,4 @@
-import { ConversationModelType } from "@/models/conversation.model"
 import getCurrentUser from "./getCurrentUser"
-import { UserModelType } from "@/models/user.model"
 import axios from "axios"
 import { FullConversationType } from "@/types/model-types"
 

@@ -8,6 +8,7 @@ import { MyModal } from "./DeleteModel"
 import Avatar from "./Profile"
 import { IoClose } from "react-icons/io5";
 import { MdDelete } from "react-icons/md"
+import useActiveList from "@/app/hooks/useActivelist"
 
 interface ProfileDrawerProps{
     isOpen?:boolean,
@@ -22,6 +23,8 @@ export const ProfileDrawer: React.FC<ProfileDrawerProps> = ({isOpen,data,onClose
     const OtherUsers = useOtherUser(data)
     const date = new Date(OtherUsers.createdAt || Date.now())
     const [modelOpen, setModelOpen] = useState(false)
+    const { members } = useActiveList();
+    const isActive = members.indexOf(OtherUsers?.email) !== -1
 
     //Showing Joining Date
     const joiningDate = useMemo(() => {
@@ -37,8 +40,8 @@ export const ProfileDrawer: React.FC<ProfileDrawerProps> = ({isOpen,data,onClose
             return `${data.users.length} members`
         }
 
-        return 'Active'
-    },[data])
+        return isActive ? 'Online' : 'Offline'
+    },[data, isActive])
 
     console.log("Model Open ",modelOpen)
 

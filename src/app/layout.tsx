@@ -4,6 +4,7 @@ import "./globals.css";
 import ToasterContext from "./context/ToasterContext";
 import AuthContext from "./context/AuthContext";
 import StoreProvider from "./StoreProvider";
+import ActiveStatus from "./users/components/ActiveStatus";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -28,7 +29,8 @@ export default function RootLayout({
             <AuthContext>
               <StoreProvider>
                 <ToasterContext/>
-                {children}
+                <ActiveStatus/>
+                  {children}
               </StoreProvider>
             </AuthContext>
           

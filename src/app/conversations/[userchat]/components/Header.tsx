@@ -10,6 +10,7 @@ import { HiEllipsisHorizontal, HiEllipsisVertical } from 'react-icons/hi2'
 import { ProfileDrawer } from './ProfileDrawer'
 import { pusherClient } from '@/app/libs/pusher'
 import { useEffect } from 'react'
+import useActiveList from '@/app/hooks/useActivelist'
 
 interface HeaderProps{
     conversation:FullConversationType
@@ -21,7 +22,8 @@ function Header({
 
     const otherUser = useOtherUser(conversation);
     const [drawerOpen , setDrawerOpen] = useState(false)
-    const [status, setStatus] = useState('Not Active')
+    const { members } = useActiveList();
+    const isActive = members.indexOf(otherUser?.email!) !== -1
 
     useEffect(() => {
 
@@ -45,8 +47,8 @@ function Header({
             return `${conversation.users.length} members`
         }
 
-        return status
-    },[conversation])
+        return isActive ? 'Online' : 'Offline'
+    },[conversation, isActive])
 
 
 

@@ -1,11 +1,13 @@
-'use client'
+"use client"
 import { Transition,Dialog, TransitionChild, DialogPanel, DialogTitle } from "@headlessui/react"
 import { Fragment, useMemo, useState } from "react"
-import Avatar from "./Profile"
+import Avatar from "../../../conversations/[userchat]/components/Profile"
 import { UserModelType } from "@/models/user.model"
 import { MdEdit } from "react-icons/md"
 import axios from "axios"
 import { CldUploadButton } from "next-cloudinary"
+import { HiPhoto } from "react-icons/hi2"
+import { useRouter } from "next/navigation"
 
 interface ProfileSetupProps{
     user: UserModelType,
@@ -14,6 +16,7 @@ interface ProfileSetupProps{
 
 const ProfileSetUp:React.FC<ProfileSetupProps> = ({user,setModelOpen}) => {
 
+    const router = useRouter();
     const [image, setImage] = useState<string | null | undefined>(user?.image)
     const [name, setName] = useState<string>(user?.name)
     const [editing, setEditing] = useState<boolean>(true);
@@ -28,10 +31,11 @@ const ProfileSetUp:React.FC<ProfileSetupProps> = ({user,setModelOpen}) => {
         const updatedData = {
             id: user._id,
             name: name,
-            image: image,
+            image: data.image,
         }
+
         await axios.post('http://localhost:3000/api/users/update', updatedData);
-        console.log('User Updates Successfully');
+        router.push('/users');
     }
 
     return (
@@ -49,7 +53,6 @@ const ProfileSetUp:React.FC<ProfileSetupProps> = ({user,setModelOpen}) => {
                 >
                     <div className="fixed inset-0 bg-black/25" />
                 </TransitionChild>
-
                 <div className="fixed inset-0 overflow-y-auto">
                     <div className="flex min-h-full items-center justify-center p-4 text-center">
                     <TransitionChild
@@ -75,13 +78,19 @@ const ProfileSetUp:React.FC<ProfileSetupProps> = ({user,setModelOpen}) => {
                         <div className="flex flex-col mt-5 mb-4 items-center justify-center gap-3">
                             <div className="relative w-fit">
                                 <div className="absolute z-40 right-2 top-4 md:right-1">
-                                    <CldUploadButton 
-                                        options={{maxFiles:1}}
-                                        onSuccess={(result:any) => { setImage(result?.info?.secure_url) }}
-                                        uploadPreset='ml_default'
+
+                                    <CldUploadButton
+                                        options={{ maxFiles: 1 }}
+                                        onSuccess={(result : any) => {
+                                            const imageUrl = result?.info?.secure_url
+                                            setImage(imageUrl)
+                                            handleUpdateProfile({image: imageUrl , name:name})
+                                        }}
+                                        uploadPreset="ml_default"
                                     >
-                                            <MdEdit className="rounded-full text-xl p-1 bg-neutral-200"/>
+                                        <MdEdit className="rounded-full bg-gray-300 p-1"/>
                                     </CldUploadButton>
+
                                 </div>
                                 <div className="mt-4 flex gap-4 justify-center">
                                     <Avatar currentUser={ user }/>
@@ -114,4 +123,4 @@ const ProfileSetUp:React.FC<ProfileSetupProps> = ({user,setModelOpen}) => {
     )
 }
 
-export { ProfileSetUp }
+export default ProfileSetUp

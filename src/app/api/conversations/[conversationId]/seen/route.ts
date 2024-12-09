@@ -16,12 +16,6 @@ export async function POST(request:NextRequest,{ params } : { params: IParams },
         const currentUser = user
         const { conversationId } = params
 
-        
-
-
-
-        console.log("Current User ",currentUser._id)
-
         if(!currentUser?.email){
             return new NextResponse('Unauthorized',{ status:401 })
         }
@@ -54,8 +48,6 @@ export async function POST(request:NextRequest,{ params } : { params: IParams },
         }
 
         // console.log('Check',check)
-        
-
         if(check){
             return NextResponse.json({msg:'Already Seen The Messages'})
         }
@@ -68,17 +60,32 @@ export async function POST(request:NextRequest,{ params } : { params: IParams },
                 seen:currentUser._id,
                 seenIds:currentUser._id
             }
-        },{returnDocument:"after"}).populate({path:'sender'}).populate({path:'seen'})
+        },{returnDocument:"after"}).populate([
+            { path:'seen' },
+            { path:'sender' }
+        ])
+
+        const updateMessageUnPopulated = await Message.findOneAndUpdate({
+            _id:lastMessage._id
+        },{
+            $push:{
+                seen:currentUser._id,
+                seenIds:currentUser._id
+            }
+        },{returnDocument:"after"})
+
+        console.log('Updated Message : ', updateMessage)
+
+        await pusherServer.trigger(user.email,'conversation:update',{
+            id:conversationId,
+            messages:updateMessageUnPopulated
+        })
         
         if(lastMessage.seenIds.indexOf(currentUser._id) !== -1){
             return NextResponse.json(conversation)
         }
 
         await pusherServer.trigger(conversationId!,'message:updated',updateMessage)
-
-        // conversation.users.map( async (user) => {
-        await pusherServer.trigger(user.email,'conversation:seen:update',{status: true})
-        // })
 
         return NextResponse.json(updateMessage)
     } catch (error) {

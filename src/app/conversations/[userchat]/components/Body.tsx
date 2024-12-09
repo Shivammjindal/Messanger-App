@@ -1,5 +1,5 @@
 "use client"
-import React, { useEffect, useMemo, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import MessageBox from './MessageBox'
 import { pusherClient } from '@/app/libs/pusher'
 import { FullMessageType } from '@/types/model-types'
@@ -16,8 +16,9 @@ const Body: React.FC<BodyProps> = ({initialMessages}) => {
   const [message, setMessage] = useState(initialMessages)
   const bottomRef = useRef<HTMLDivElement>(null)
   const { conversationId } = useConversation();
-
+ 
   useEffect(() => {
+    //load new conversation on welcoming the new one
     axios.post(`http://localhost:3000/api/conversations/${conversationId}/seen`,conversationId)
   },[conversationId])
 
@@ -26,12 +27,11 @@ const Body: React.FC<BodyProps> = ({initialMessages}) => {
     pusherClient.subscribe(conversationId)
     bottomRef?.current?.scrollIntoView()
 
-    const handleMessage = async (message : FullMessageType) => {
+    const handleMessage = (message : FullMessageType) => {
 
       //alert everyone that we have seen the message.
-      await axios.post(`http://localhost:3000/api/conversations/${conversationId}/seen`,conversationId)
+      axios.post(`http://localhost:3000/api/conversations/${conversationId}/seen`,conversationId)
 
-      // console.log('running')
       setMessage((current) => {
 
         //Just checking that there is no duplicacy of messages
@@ -39,16 +39,14 @@ const Body: React.FC<BodyProps> = ({initialMessages}) => {
           return current;
         }
 
-        // console.log('current message ',current)
-        // console.log("Find : ",find(current,{_id: message._id}))
         return [...current, message]
       })
-
       bottomRef?.current?.scrollIntoView()
     }
 
     const handleUpdateMessage = (newMessage:FullMessageType) => {
 
+      //updating seen array
       setMessage((current) => current.map((currentMessage:FullMessageType) => {
         if(currentMessage._id === newMessage._id){
           return newMessage
@@ -82,11 +80,13 @@ const Body: React.FC<BodyProps> = ({initialMessages}) => {
   return (
     <div className='flex-1 overflow-y-auto'>
       {/* use ref helps in percisting value throughout rerender */}
-      {
-        message.map((msg,i) => (
-          <MessageBox key={msg?._id || msg?.id || ''} isLast={i === message.length-1} data={msg}/>
-        ))
-      }
+        <div>
+          {
+            message.map((msg,i) => (
+              <MessageBox key={msg?._id || msg?.id || ''} isLast={i === message.length-1} data={msg}/>
+            ))
+          }
+        </div>
     </div>
   )
 }

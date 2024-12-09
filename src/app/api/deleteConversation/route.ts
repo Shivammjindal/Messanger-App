@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server"
 import { Conversation } from "@/models"
+import { SemiFullConversationType } from "@/types/model-types";
+import { pusherServer } from "@/app/libs/pusher";
 
 export async function POST(request:NextRequest, response:NextResponse) {
     try {   
@@ -8,9 +10,20 @@ export async function POST(request:NextRequest, response:NextResponse) {
         if(!conversationId){
             return new NextResponse('Invalid Data',{ status: 400})
         }
+
+        const existingConversation:SemiFullConversationType = await Conversation.findOne({_id: conversationId}).populate('users');
+
+        existingConversation.users.forEach((user) => {
+            if(user.email){
+                pusherServer.trigger(user.email,'conversation:remove',{
+                    id: existingConversation._id
+                })
+            }
+        })
+
         await Conversation.findOneAndDelete({
             _id: conversationId
-        })
+        });
 
         return NextResponse.json({message:'conversation deleted successfully'})
     } catch (error) {

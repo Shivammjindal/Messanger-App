@@ -2,7 +2,6 @@ import mongoose from "mongoose"
 import { MongoClient,ServerApiVersion } from "mongodb"
 import { createModels } from "./models/createModels"
 
-
 let client : MongoClient
 const options = {
     serverApi: {
