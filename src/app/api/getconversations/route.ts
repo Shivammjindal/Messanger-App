@@ -1,10 +1,13 @@
-import { pusherServer } from "@/app/libs/pusher"
 import { Conversation } from "@/models"
 import { FullConversationType } from "@/types/model-types"
 import { NextRequest,NextResponse } from "next/server"
+import { connect } from "@/app/db/connection"
 
 export async function POST(request:NextRequest, response:NextResponse){
     try {
+
+        await connect().then(() => console.log('User db connected'))
+
         const {userId} = await request.json()
 
         console.log("User Id : ", userId)

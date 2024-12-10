@@ -4,10 +4,13 @@ import { Message } from "@/models"
 import { Conversation } from "@/models"
 import { pusherServer } from "@/app/libs/pusher"
 import { FullConversationType } from "@/types/model-types"
+import { connect } from "@/app/db/connection"
 
 export async function POST(request:NextRequest, response:NextResponse){
 
     try {
+
+        await connect().then(() => console.log('User db connected'))
         
         const { user } = await getCurrentUser()
         const currUser = user

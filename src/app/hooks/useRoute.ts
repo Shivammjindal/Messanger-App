@@ -8,6 +8,7 @@ import {
 
 import { signOut } from "next-auth/react"
 import useConversation from "./useConversation"
+import toast from "react-hot-toast"
 
 const useRoutes = () => {
 
@@ -31,7 +32,7 @@ const useRoutes = () => {
         {
             label:'Logout',
             href:'/',
-            onClick:() => signOut(),
+            onClick:() => { signOut(); toast.success('Logged Out Successfully')},
             icon: HiArrowRightOnRectangle
         }
     ],[])

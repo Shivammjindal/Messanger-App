@@ -3,6 +3,7 @@ import { Conversation, Message } from "@/models";
 import { NextRequest,NextResponse } from "next/server";
 import { FullConversationType } from "@/types/model-types";
 import { pusherServer } from "@/app/libs/pusher";
+import { connect } from "@/app/db/connection"
 
 interface IParams{
     conversationId?:string
@@ -11,6 +12,8 @@ interface IParams{
 export async function POST(request:NextRequest,{ params } : { params: IParams }, response:NextResponse){
     
     try {
+
+        await connect().then(() => console.log('User db connected'))
 
         const { user } = await getCurrentUser()
         const currentUser = user

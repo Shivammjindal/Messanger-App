@@ -64,3 +64,5 @@ export const UserSchema = new mongoose.Schema({
 })
 
 export type UserModelType = InferSchemaType<typeof UserSchema> & Document
+
+// export const User = mongoose.models.messages || mongoose.model<UserModelType>('users',UserSchema)

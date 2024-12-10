@@ -3,9 +3,13 @@ import { NextRequest,NextResponse } from "next/server"
 import { Conversation } from "@/models"
 import { UserModelType } from "@/models/user.model"
 import { pusherServer } from "@/app/libs/pusher"
+import { connect } from "@/app/db/connection"
 
 export async function POST(request:NextRequest, response:NextResponse){
     try {
+
+        await connect().then(() => console.log('User db connected'))
+
         const { user } = await getCurrentUser()
         const body = await request.json()
         const {

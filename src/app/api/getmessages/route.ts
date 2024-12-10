@@ -1,9 +1,13 @@
 import { Message } from "@/models";
 import { NextRequest,NextResponse } from "next/server";
+import { connect } from "@/app/db/connection"
 
 export async function POST(request:NextRequest ,response:NextResponse){
 
     try {
+
+        await connect().then(() => console.log('User db connected'))
+
         const {
             conversationId
         } = await request.json()

@@ -1,7 +1,7 @@
 import React from 'react'
 import EmptySpace from './components/EmptySpace'
 
-export function Users() {
+function Users() {
 
   return (
     <div className='hidden h-full lg:block lg:pl-80'>

@@ -1,6 +1,6 @@
 import mongoose, { Document, InferSchemaType } from "mongoose";
 
-const AccountSchema = new mongoose.Schema({
+export const AccountSchema = new mongoose.Schema({
     userId:{
         type:String,
         unique:true

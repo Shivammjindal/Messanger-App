@@ -1,9 +1,12 @@
 import { NextRequest, NextResponse } from "next/server"
 import { User } from "@/models";
+import { connect } from "@/app/db/connection"
 
 export const POST = async (request:NextRequest, response:NextResponse) => {
 
     try {
+
+        await connect().then(() => console.log('User db connected'))
 
         const { id,image,name } = await request.json()
         console.log("Credentials : ",id,image,name);

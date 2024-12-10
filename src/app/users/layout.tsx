@@ -8,7 +8,11 @@ export default async function userLayout({
     children:React.ReactNode
 }){
 
-    const { users } = await getAllUsers();
+    const data = await getAllUsers();
+    let users = null
+    if(data){
+        users = data.users
+    }
 
     return (
         <Sidebar>
